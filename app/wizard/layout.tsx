@@ -5,11 +5,11 @@ export default function WizardLayout({
 }: Readonly<{ children: React.ReactNode}>) {
   return (
     <div className="flex min-h-screen items-center justify-center bg-magnolia font-sans">
-      <main className="flex rounded-2xl bg-white p-4 shadow-lg">
+      <main className="flex flex-col md:flex-row md:p-4 md:bg-white md:rounded-lg" data-testid="wizard-body">
         {/* Sidebar */}
         <WizardSidebar />
 
-        <div>
+        <div className="flex flex-1 flex-col px-6 mx-6 rounded-2xl -mt-32 md:-mt-0 z-10 relative bg-white shadow-lg md:shadow-none">
           {children}
         </div>
       </main>

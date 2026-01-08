@@ -18,7 +18,8 @@ export default function Step1() {
 
   return (
     <div>
-      <div className="flex flex-1 flex-col px-24 py-10">
+      {/* px-6 */}
+      <div className="flex flex-1 flex-col py-10">
         <div className="max-w-[384px]">
           <FormHeader
             title="Personal info"

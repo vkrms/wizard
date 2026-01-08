@@ -22,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${ubuntu.variable} antialiased p-6`}
+        className={`${ubuntu.variable} antialiased md:p-6`}
       >
         {children}
       </body>
