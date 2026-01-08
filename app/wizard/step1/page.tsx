@@ -2,6 +2,7 @@
 
 import { Button, FormHeader, TextField } from '@/components/ui';
 import { useForm, FormProvider } from "react-hook-form"
+import { useRouter } from 'next/navigation'
 
 type Inputs = {
   name: string
@@ -11,9 +12,14 @@ type Inputs = {
 
 export default function Step1() {
   const methods = useForm<Inputs>();
+  const router = useRouter();
 
-  const onSubmit = (data: object) => {
+  const onSubmit = (data: Inputs) => {
     console.log({formData:data})
+    // Save form data to localStorage
+    localStorage.setItem('wizardStep1', JSON.stringify(data))
+    // Navigate to next step
+    router.push('/wizard/step2')
   }
 
   return (
