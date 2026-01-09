@@ -16,7 +16,7 @@ export interface PlanCardProps extends Omit<InputHTMLAttributes<HTMLInputElement
 const PlanCard = ({ className, plan, price, isSelected, ...props }: PlanCardProps) => {
   return (
     <label className={cn(
-      'flex flex-col md:flex-row gap-4 p-4 rounded-lg border-2 cursor-pointer transition-all',
+      'flex flex-row md:flex-col gap-4 p-4 rounded-lg border-2 cursor-pointer transition-all',
       isSelected
         ? 'border-primary bg-alabaster'
         : 'border-light-gray bg-white hover:border-primary',
