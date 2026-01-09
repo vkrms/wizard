@@ -5,6 +5,7 @@ import { useForm, FormProvider, Controller } from "react-hook-form"
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
+import { Switch } from '@headlessui/react';
 
 type Inputs = {
   plan: 'arcade' | 'advanced' | 'pro';
@@ -56,90 +57,96 @@ export default function Step2() {
   }
 
   return (
-    <div>
-      <div className="flex flex-1 flex-col py-10">
-        <div className="max-w-[448px]">
-          <FormHeader
-            title="Select your plan"
-            description="You have the option of monthly or yearly billing."
-          />
+    <>
+      <FormHeader
+        title="Select your plan"
+        description="You have the option of monthly or yearly billing."
+      />
 
-          <FormProvider {...methods}>
-            <form
-              onSubmit={methods.handleSubmit(onSubmit)}
-              className="mt-9 flex flex-1 flex-col"
-            >
-              {/* Plan Cards Grid */}
-              <div className="flex flex-col md:flex-row gap-4">
-                {plans.map((plan) => {
-                  
-                  const price = isYearly
-                    ? `$${plan.monthlyPrice * 10}/yr`
-                    : `$${plan.monthlyPrice}/mo`
+      <FormProvider {...methods}>
+        <form
+          onSubmit={methods.handleSubmit(onSubmit)}
+          className="mt-9 flex flex-1 flex-col"
+        >
+          {/* Plan Cards Grid */}
+          <div className="grid gap-4 grid-cols-1 md:grid-cols-3">
+            {plans.map((plan) => {
+              const price = isYearly
+                ? `$${plan.monthlyPrice * 10}/yr`
+                : `$${plan.monthlyPrice}/mo`
 
-                  return(
-                      <PlanCard
-                        key={plan.id}
-                        plan={plan}
-                        price={price}
-                        isSelected={selectedPlan === plan.id}
-                        {...register('plan')}
-                      />
-                )})}
-              </div>
-
-              {/* Billing Toggle */}
-              <div className="flex items-center justify-center gap-6 mt-8 bg-magnolia rounded-lg py-4">
-                <span className={cn(
-                  'text-sm font-medium',
-                  {
-                    'text-marine-blue': !isYearly,
-                    'text-cool-gray': isYearly
-                  }
-                )}>
-                  Monthly
-                </span>
-                
-                <Controller
-                  name="billingYearly"
-                  control={methods.control}
-                  render={({ field }) => (
-                    <input
-                      type="checkbox"
-                      checked={field.value}
-                      onChange={(e) => {
-                        field.onChange(e.target.checked);
-                        setIsYearly(e.target.checked);
-                      }}
-                      className="w-4 h-4 cursor-pointer"
-                    />
-                  )}
+              return (
+                <PlanCard
+                  key={plan.id}
+                  plan={plan}
+                  price={price}
+                  isSelected={selectedPlan === plan.id}
+                  {...register('plan')}
                 />
-                
-                <span className={cn(
-                  'text-sm font-medium',
-                  {
-                    'text-marine-blue': isYearly,
-                    'text-cool-gray': !isYearly
-                  }
-                )}>
-                  Yearly
-                </span>
-              </div>
+              );
+            })}
+          </div>
 
-              {/* Navigation */}
-              <div className="mt-auto flex justify-between pt-8">
-                <Button type="button" variant="ghost" onClick={handleGoBack}>
-                  Go Back
-                </Button>
-                <Button type="submit">Next Step</Button>
-              </div>
+          {/* Billing Toggle */}
+          <div className="flex items-center justify-center gap-6 mt-8 bg-magnolia rounded-lg py-4">
+            <span className={cn(
+              'text-sm font-medium',
+              {
+                'text-marine-blue': !isYearly,
+                'text-cool-gray': isYearly
+              }
+            )}>
+              Monthly
+            </span>
+            
+            <Controller
+              name="billingYearly"
+              control={methods.control}
+              render={({ field }) => (
+                // <input
+                //   type="checkbox"
+                //   checked={field.value}
+                //   onChange={(e) => {
+                //     field.onChange(e.target.checked);
+                //     setIsYearly(e.target.checked);
+                //   }}
+                //   className="w-4 h-4 cursor-pointer"
+                // />
+                <Switch
+                  checked={field.value}
+                  onChange={() => {
+                    field.onChange(!field.value)
+                    setIsYearly(!field.value)
+                  }}
+                  className="group inline-flex h-6 w-11 items-center rounded-full bg-gray-200 transition data-checked:bg-blue-600 cursor-pointer"
+                >
+                  <span className="size-4 translate-x-1 rounded-full bg-white transition group-data-checked:translate-x-6" />
+                </Switch>                    
+              )}
+            />
+            
+            <span className={cn(
+              'text-sm font-medium',
+              {
+                'text-marine-blue': isYearly,
+                'text-cool-gray': !isYearly
+              }
+            )}>
+              Yearly
+            </span>
+          </div>
 
-            </form>
-          </FormProvider>
-        </div>
-      </div>
-    </div>
+          {/* Navigation */}
+          <div className="mt-auto flex justify-between">
+            <Button type="button" variant="ghost" onClick={handleGoBack}>
+              Go Back
+            </Button>
+            <Button type="submit">Next Step</Button>
+          </div>
+
+        </form>
+      </FormProvider>      
+    </>
   );
 }
 
