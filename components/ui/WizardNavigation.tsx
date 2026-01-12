@@ -22,7 +22,7 @@ export function WizardNavigation({
           {backLabel}
         </Button>
       )}
-      <Button type="submit" onClick={onNext}>
+      <Button type={onNext ? "button" : "submit"} onClick={onNext}>
         {nextLabel}
       </Button>
     </div>
