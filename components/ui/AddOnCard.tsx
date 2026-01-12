@@ -16,21 +16,21 @@ const AddOnCard = ({ className, addOn, price, isSelected, ...props }: AddOnCardP
     <label className={cn(
       'flex items-center gap-4 p-4 rounded-lg border-2 cursor-pointer transition-all',
       isSelected
-        ? 'border-primary bg-alabaster'
-        : 'border-light-gray bg-white hover:border-primary',
+        ? 'border-purple-600 bg-blue-50'
+        : 'border-purple-200 bg-white hover:border-purple-600',
       className
     )}>
       <input 
         type="checkbox" 
-        className="w-5 h-5 rounded border-light-gray text-primary focus:ring-primary cursor-pointer accent-primary" 
+        className="w-5 h-5 rounded border-purple-200 text-purple-600 focus:ring-purple-600 cursor-pointer accent-purple-600" 
         checked={isSelected}
         {...props} 
       />
       <div className="flex-1 flex flex-col gap-1">
-        <span className="text-marine-blue font-medium">{addOn.name}</span>
-        <span className="text-cool-gray text-sm">{addOn.description}</span>
+        <span className="text-blue-950 font-medium">{addOn.name}</span>
+        <span className="text-grey-500 text-sm">{addOn.description}</span>
       </div>
-      <span className="text-primary text-sm font-medium">{price}</span>
+      <span className="text-purple-600 text-sm font-medium">{price}</span>
     </label>
   );
 };

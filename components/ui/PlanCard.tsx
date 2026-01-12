@@ -18,8 +18,8 @@ const PlanCard = ({ className, plan, price, isSelected, ...props }: PlanCardProp
     <label className={cn(
       'flex flex-row md:flex-col gap-4 p-4 rounded-lg border-2 cursor-pointer transition-all',
       isSelected
-        ? 'border-primary bg-alabaster'
-        : 'border-light-gray bg-white hover:border-primary',
+        ? 'border-purple-600 bg-blue-50'
+        : 'border-purple-200 bg-white hover:border-purple-600',
       className
     )}>
       <input type="radio" className="sr-only" value={plan.id} {...props} />
@@ -27,8 +27,8 @@ const PlanCard = ({ className, plan, price, isSelected, ...props }: PlanCardProp
         <Image src={plan.icon} alt={plan.name} width={40} height={40} className="w-10 h-10" />
       </div>
       <div className="flex flex-col">
-        <span className="text-marine-blue font-medium">{plan.name}</span>
-        <span className="text-cool-gray text-sm">{price}</span>
+        <span className="text-blue-950 font-medium">{plan.name}</span>
+        <span className="text-grey-500 text-sm">{price}</span>
       </div>
     </label>
   );

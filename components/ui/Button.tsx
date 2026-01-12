@@ -15,9 +15,9 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         className={cn(
           'h-12 rounded-lg px-6 text-base font-medium transition-colors cursor-pointer',
           {
-            'bg-marine-blue text-white hover:bg-primary-hover': variant === 'primary',
-            'bg-transparent text-cool-gray hover:text-marine-blue': variant === 'secondary',
-            'bg-transparent text-cool-gray hover:text-marine-blue temp': variant === 'ghost',
+            'bg-blue-950 text-white hover:bg-blue-950': variant === 'primary',
+            'bg-transparent text-grey-500 hover:text-blue-950': variant === 'secondary',
+            'bg-transparent text-grey-500 hover:text-blue-950 temp': variant === 'ghost',
           },
           className
         )}

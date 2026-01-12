@@ -109,12 +109,12 @@ export default function Step2() {
           </div>
 
           {/* Billing Toggle */}
-          <div className="flex items-center justify-center gap-6 mt-8 bg-magnolia rounded-lg py-4 mb-8">
+          <div className="flex items-center justify-center gap-6 mt-8 bg-blue-100 rounded-lg py-4 mb-8">
             <span className={cn(
               'text-sm font-medium',
               {
-                'text-marine-blue': !isYearly,
-                'text-cool-gray': isYearly
+                'text-blue-950': !isYearly,
+                'text-grey-500': isYearly
               }
             )}>
               Monthly
@@ -150,8 +150,8 @@ export default function Step2() {
             <span className={cn(
               'text-sm font-medium',
               {
-                'text-marine-blue': isYearly,
-                'text-cool-gray': !isYearly
+                'text-blue-950': isYearly,
+                'text-grey-500': !isYearly
               }
             )}>
               Yearly

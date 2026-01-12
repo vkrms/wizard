@@ -26,6 +26,10 @@ export default function WizardSidebar({ currentStep }: WizardSidebarProps) {
 
   const getActiveStep = () => {
     if (currentStep) return currentStep;
+    // Special case: step 5 should show step 4 as active
+    if (pathname?.includes('/wizard/step5')) {
+      return 4;
+    }
     const activeStep = steps.find((step) => pathname?.includes(step.path || ''));
     return activeStep?.number || 1;
   };
@@ -49,7 +53,7 @@ export default function WizardSidebar({ currentStep }: WizardSidebarProps) {
                 className={cn(
                   'flex h-8 w-8 items-center justify-center rounded-full border text-sm font-bold transition-all duration-200',
                   isActive
-                    ? 'border-light-blue bg-light-blue text-marine-blue'
+                    ? 'border-blue-200 bg-blue-200 text-blue-950'
                     : 'border-white bg-transparent text-white'
                 )}
               >
@@ -58,7 +62,7 @@ export default function WizardSidebar({ currentStep }: WizardSidebarProps) {
 
               {/* Step Text */}
               <div className="hidden md:flex flex-col">
-                <span className="text-xs font-normal tracking-wide text-pastel-blue">
+                <span className="text-xs font-normal tracking-wide text-blue-300">
                   {step.label}
                 </span>
                 <span className="text-sm font-bold tracking-widest text-white">

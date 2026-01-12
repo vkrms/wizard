@@ -2,24 +2,18 @@
 
 @theme inline {
   /* Primary colors */
-  --color-primary: #483EFF;
-  --color-primary-hover: #164A8A;
+  --color-purple-600: hsl(243, 100%, 62%);
+  --color-blue-950: hsl(213, 96%, 18%);
 
-  /* Text colors */
-  --color-marine-blue: #022959;
-  --color-cool-gray: #9699AA;
-  --color-light-gray: #D6D9E6;
-
-  /* Background colors */
-  --color-magnolia: #EFF5FF;
-  --color-alabaster: #FAFBFF;
-
-  /* Sidebar colors */
-  --color-pastel-blue: #ABBCFF;
-  --color-light-blue: #BEE2FD;
-
-  /* Status colors */
-  --color-strawberry-red: #EE374A;
+  /* Neutral colors */
+  --color-grey-500: hsl(231, 11%, 63%);
+  --color-purple-200: hsl(229, 24%, 87%);
+  --color-blue-100: hsl(218, 100%, 97%);
+  --color-blue-50: hsl(231, 100%, 99%);
+  --color-blue-300: hsl(228, 100%, 84%);
+  --color-blue-200: hsl(206, 94%, 87%);
+  --color-red-500: hsl(354, 84%, 57%);
+  --color-white: hsl(0, 100%, 100%);
 
   /* Fonts */
   --font-sans: var(--font-geist-sans);
@@ -27,14 +21,14 @@
 }
 
 body {
-  background: var(--color-magnolia);
-  color: var(--color-marine-blue);
+  background: var(--color-blue-100);
+  color: var(--color-blue-950);
   font-family: "Ubuntu", sans-serif;
 }
 
 .temp {
   input {
-    @apply border border-light-blue mx-2 rounded-lg h-8 focus:outline-none focus:ring-1 focus:ring-primary px-2;
+    @apply border border-blue-200 mx-2 rounded-lg h-8 focus:outline-none focus:ring-1 focus:ring-purple-600 px-2;
   }
   
   input[type="submit"] {

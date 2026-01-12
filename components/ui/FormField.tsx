@@ -11,12 +11,12 @@ export function FormField({ label, htmlFor, error, children }: FormFieldProps) {
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center justify-between">
-        <label htmlFor={htmlFor} className="text-sm font-medium text-marine-blue">
+        <label htmlFor={htmlFor} className="text-sm font-medium text-blue-950">
           {label}
         </label>
         
         {error && (
-          <span className="text-sm font-bold text-strawberry-red">{error}</span>
+          <span className="text-sm font-bold text-red-500">{error}</span>
         )}
       </div>
       {children}
