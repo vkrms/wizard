@@ -1,4 +1,5 @@
 import WizardSidebar from '@/components/WizardSidebar';
+import { WizardProvider } from '@/lib/WizardContext';
 
 export default function WizardLayout({
   children
@@ -11,7 +12,9 @@ export default function WizardLayout({
 
         <div className="flex flex-1 flex-col px-6 mx-6 rounded-2xl -mt-32 md:mt-0 z-10 relative bg-white shadow-lg md:shadow-none py-10">
           <div className="flex flex-1 flex-col">
-            {children}
+            <WizardProvider>
+              {children}
+            </WizardProvider>
           </div>
         </div>
       </main>
