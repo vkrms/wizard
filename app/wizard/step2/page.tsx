@@ -1,11 +1,12 @@
 'use client'
 
-import { Button, FormHeader, PlanCard } from '@/components/ui';
+import { useEffect } from 'react';
+import { FormHeader, PlanCard, WizardNavigation } from '@/components/ui';
 import { useForm, FormProvider, Controller } from "react-hook-form"
-import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Switch } from '@headlessui/react';
+import { useWizard } from '@/lib/WizardContext';
 
 type Inputs = {
   plan: 'arcade' | 'advanced' | 'pro';
@@ -34,26 +35,44 @@ const plans = [
 ];
 
 export default function Step2() {
+  const { data, updateData } = useWizard()
   const router = useRouter();
+
   const methods = useForm<Inputs>({
     defaultValues: {
-      plan: 'arcade',
-      billingYearly: false,
+      plan: data.plan || 'arcade',
+      billingYearly: data.billingYearly || false,
     }
   });
-  
+
+  // Update form values when context data changes
+  useEffect(() => {
+    if (data.plan) {
+      methods.setValue('plan', data.plan)
+    }
+    if (data.billingYearly !== undefined) {
+      methods.setValue('billingYearly', data.billingYearly)
+    }
+  }, [data.plan, data.billingYearly, methods])
+
   const { register } = methods;
 
-  const [isYearly, setIsYearly] = useState(false);
   const selectedPlan = methods.watch('plan');
+  const isYearly = methods.watch('billingYearly');
 
-  const onSubmit = (data: Inputs) => {
-    console.log({formData: data})
+  // Save data whenever form values change
+  const saveData = () => {
+    const currentValues = methods.getValues()
+    updateData(currentValues)
+  }
+
+  const onSubmit = (formData: Inputs) => {
+    updateData(formData)
     router.push('/wizard/step3');
   }
 
   const handleGoBack = () => {
-    router.push('/wizard/step1');
+    router.back();
   }
 
   return (
@@ -81,14 +100,16 @@ export default function Step2() {
                   plan={plan}
                   price={price}
                   isSelected={selectedPlan === plan.id}
-                  {...register('plan')}
+                  {...register('plan', {
+                    onChange: saveData
+                  })}
                 />
               );
             })}
           </div>
 
           {/* Billing Toggle */}
-          <div className="flex items-center justify-center gap-6 mt-8 bg-magnolia rounded-lg py-4">
+          <div className="flex items-center justify-center gap-6 mt-8 bg-magnolia rounded-lg py-4 mb-8">
             <span className={cn(
               'text-sm font-medium',
               {
@@ -116,7 +137,8 @@ export default function Step2() {
                   checked={field.value}
                   onChange={() => {
                     field.onChange(!field.value)
-                    setIsYearly(!field.value)
+                    // Save data immediately when billing preference changes
+                    setTimeout(saveData, 0) // Use setTimeout to ensure form state is updated first
                   }}
                   className="group inline-flex h-6 w-11 items-center rounded-full bg-gray-200 transition data-checked:bg-blue-600 cursor-pointer"
                 >
@@ -136,13 +158,10 @@ export default function Step2() {
             </span>
           </div>
 
-          {/* Navigation */}
-          <div className="mt-auto flex justify-between">
-            <Button type="button" variant="ghost" onClick={handleGoBack}>
-              Go Back
-            </Button>
-            <Button type="submit">Next Step</Button>
-          </div>
+          <WizardNavigation
+            showBack={true}
+            onBack={handleGoBack}
+          />
 
         </form>
       </FormProvider>      

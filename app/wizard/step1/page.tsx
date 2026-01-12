@@ -1,8 +1,9 @@
 'use client'
 
-import { Button, FormHeader, TextField } from '@/components/ui';
+import { FormHeader, TextField, WizardNavigation } from '@/components/ui';
 import { useForm, FormProvider } from "react-hook-form"
 import { useRouter } from 'next/navigation'
+import { useWizard } from '@/lib/WizardContext'
 
 type Inputs = {
   name: string
@@ -10,28 +11,20 @@ type Inputs = {
   phone: string
 }
 
-const getStoredData = (): Partial<Inputs> => {
-  if (typeof window === 'undefined') return {};
-  
-  try {
-    const stored = localStorage.getItem('wizardStep1');
-    return stored ? JSON.parse(stored) : {};
-  } catch {
-    return {};
-  }
-};
-
 export default function Step1() {
-  const methods = useForm<Inputs>({
-    defaultValues: getStoredData(),
-  });
+  const { data, updateData } = useWizard()
   const router = useRouter();
 
-  const onSubmit = (data: Inputs) => {
-    console.log({formData:data})
-    // Save form data to localStorage
-    localStorage.setItem('wizardStep1', JSON.stringify(data))
-    // Navigate to next step
+  const methods = useForm<Inputs>({
+    defaultValues: {
+      name: data.name || '',
+      email: data.email || '',
+      phone: data.phone || '',
+    },
+  });
+
+  const onSubmit = (formData: Inputs) => {
+    updateData(formData)
     router.push('/wizard/step2')
   }
 
@@ -74,10 +67,9 @@ export default function Step1() {
               />
             </div>
 
-            {/* Navigation */}
-            <div className="mt-auto flex justify-end pt-8">
-              <Button type="submit">Next Step</Button>
-            </div>
+            <WizardNavigation
+              showBack={false}
+            />
             
           </form>
         </FormProvider>
