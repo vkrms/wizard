@@ -38,11 +38,11 @@ export default function WizardSidebar({ currentStep }: WizardSidebarProps) {
 
   return (
     <aside
-      className="relative flex flex-col md:rounded-lg p-8 pt-10 overflow-hidden items-center h-64 md:h-auto sidebar"
+      className="relative flex flex-col md:rounded-lg p-8 pt-8 md:pt-10 overflow-hidden items-center md:w-full md:max-w-[276px] md:items-start sidebar h-[172px] md:h-auto"
       data-testid="wizard-sidebar"
     >
       {/* Steps */}
-      <nav className="relative z-10 flex md:flex-col gap-7">
+      <nav className="relative z-10 flex md:flex-col gap-4 md:gap-7">
         {steps.map((step) => {
           const isActive = step.number === activeStepNumber;
 

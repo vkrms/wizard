@@ -14,23 +14,23 @@ export interface AddOnCardProps extends Omit<InputHTMLAttributes<HTMLInputElemen
 const AddOnCard = ({ className, addOn, price, isSelected, ...props }: AddOnCardProps) => {
   return (
     <label className={cn(
-      'flex items-center gap-4 p-4 rounded-lg border-2 cursor-pointer transition-all',
+      'flex items-center gap-4 md:gap-6 p-4 rounded-lg border-2 cursor-pointer transition-all py-[10px] md:py-4 md:px-5 h-auto',
       isSelected
         ? 'border-purple-600 bg-blue-50'
         : 'border-purple-200 bg-white hover:border-purple-600',
       className
     )}>
-      <input 
-        type="checkbox" 
-        className="w-5 h-5 rounded border-purple-200 text-purple-600 focus:ring-purple-600 cursor-pointer accent-purple-600" 
+      <input
+        type="checkbox"
+        className="w-5 h-5 rounded border-purple-200 text-purple-600 focus:ring-purple-600 cursor-pointer accent-purple-600"
         checked={isSelected}
-        {...props} 
+        {...props}
       />
-      <div className="flex-1 flex flex-col gap-1">
+      <div className="flex-1 flex flex-col leading-normal text-[14px] md:text-[16px]">
         <span className="text-blue-950 font-medium">{addOn.name}</span>
-        <span className="text-grey-500 text-sm">{addOn.description}</span>
+        <span className="text-grey-500 text-xs md:text-sm">{addOn.description}</span>
       </div>
-      <span className="text-purple-600 text-sm font-medium">{price}</span>
+      <span className="text-purple-600 text-xs md:text-sm font-medium">{price}</span>
     </label>
   );
 };

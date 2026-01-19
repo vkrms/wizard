@@ -1,12 +1,13 @@
 'use client'
 
 import { useEffect } from 'react';
-import { FormHeader, PlanCard, WizardNavigation } from '@/components/ui';
+import { Form, FormHeader, PlanCard, WizardContent, WizardNavigation } from '@/components/ui';
 import { useForm, FormProvider, Controller } from "react-hook-form"
 import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Switch } from '@headlessui/react';
 import { useWizard } from '@/lib/WizardContext';
+import DesignControl from '@/components/DesignControl';
 
 type Inputs = {
   plan: 'arcade' | 'advanced' | 'pro';
@@ -19,18 +20,21 @@ const plans = [
     name: 'Arcade',
     icon: '/icon-arcade.svg',
     monthlyPrice: 9,
+    yearlyPerk: '2 months free',
   },
   {
     id: 'advanced' as const,
     name: 'Advanced',
     icon: '/icon-advanced.svg',
     monthlyPrice: 12,
+    yearlyPerk: '2 months free',
   },
   {
     id: 'pro' as const,
     name: 'Pro',
     icon: '/icon-pro.svg',
     monthlyPrice: 15,
+    yearlyPerk: '2 months free',
   },
 ];
 
@@ -77,94 +81,98 @@ export default function Step2() {
 
   return (
     <>
-      <FormHeader
-        title="Select your plan"
-        description="You have the option of monthly or yearly billing."
+      <DesignControl
+        srcMobile="/design/mobile-design-step-2-yearly.jpg"
+        srcDesktop="/design/desktop-design-step-2-yearly.jpg"
+        className="bob1522"
       />
 
       <FormProvider {...methods}>
-        <form
-          onSubmit={methods.handleSubmit(onSubmit)}
-          className="mt-9 flex flex-1 flex-col"
-        >
-          {/* Plan Cards Grid */}
-          <div className="grid gap-4 grid-cols-1 md:grid-cols-3">
-            {plans.map((plan) => {
-              const price = isYearly
-                ? `$${plan.monthlyPrice * 10}/yr`
-                : `$${plan.monthlyPrice}/mo`
-
-              return (
-                <PlanCard
-                  key={plan.id}
-                  plan={plan}
-                  price={price}
-                  isSelected={selectedPlan === plan.id}
-                  {...register('plan', {
-                    onChange: saveData
-                  })}
-                />
-              );
-            })}
-          </div>
-
-          {/* Billing Toggle */}
-          <div className="flex items-center justify-center gap-6 mt-8 bg-blue-100 rounded-lg py-4 mb-8">
-            <span className={cn(
-              'text-sm font-medium',
-              {
-                'text-blue-950': !isYearly,
-                'text-grey-500': isYearly
-              }
-            )}>
-              Monthly
-            </span>
-            
-            <Controller
-              name="billingYearly"
-              control={methods.control}
-              render={({ field }) => (
-                // <input
-                //   type="checkbox"
-                //   checked={field.value}
-                //   onChange={(e) => {
-                //     field.onChange(e.target.checked);
-                //     setIsYearly(e.target.checked);
-                //   }}
-                //   className="w-4 h-4 cursor-pointer"
-                // />
-                <Switch
-                  checked={field.value}
-                  onChange={() => {
-                    field.onChange(!field.value)
-                    // Save data immediately when billing preference changes
-                    setTimeout(saveData, 0) // Use setTimeout to ensure form state is updated first
-                  }}
-                  className="group inline-flex h-6 w-11 items-center rounded-full bg-gray-200 transition data-checked:bg-blue-600 cursor-pointer"
-                >
-                  <span className="size-4 translate-x-1 rounded-full bg-white transition group-data-checked:translate-x-6" />
-                </Switch>                    
-              )}
-            />
-            
-            <span className={cn(
-              'text-sm font-medium',
-              {
-                'text-blue-950': isYearly,
-                'text-grey-500': !isYearly
-              }
-            )}>
-              Yearly
-            </span>
-          </div>
-
-          <WizardNavigation
-            showBack={true}
-            onBack={handleGoBack}
+        <WizardContent className='flex-1 max-h-[564px]'>
+          <FormHeader
+            title="Select your plan"
+            description="You have the option of monthly or yearly billing."
           />
 
-        </form>
-      </FormProvider>      
+          <Form
+            onSubmit={onSubmit}
+            className="mt-5 md:mt-9 flex flex-1 flex-col"
+          >
+            {/* Plan Cards Grid */}
+            <div className="grid gap-[10px] md:gap-4 grid-cols-1 md:grid-cols-3">
+              {plans.map((plan) => {
+                const price = isYearly
+                  ? `$${plan.monthlyPrice * 10}/yr`
+                  : `$${plan.monthlyPrice}/mo`
+
+                const yearlyPerk = isYearly ? plan.yearlyPerk : undefined
+
+                return (
+                  <PlanCard
+                    key={plan.id}
+                    plan={plan}
+                    price={price}
+                    yearlyPerk={yearlyPerk}
+                    isSelected={selectedPlan === plan.id}
+                    {...register('plan', {
+                      onChange: saveData
+                    })}
+                  />
+                );
+              })}
+            </div>
+
+            {/* Billing Toggle */}
+            <div className="flex items-center justify-center gap-6 mt-5 md:mt-8 bg-blue-100 rounded-lg py-4 mb-0 md:mb-8 h-[48px] md:h-[44px]">
+              <span className={cn(
+                'text-sm font-medium',
+                {
+                  'text-blue-950': !isYearly,
+                  'text-grey-500': isYearly
+                }
+              )}>
+                Monthly
+              </span>
+
+              <Controller
+                name="billingYearly"
+                control={methods.control}
+                render={({ field }) => (
+                  <Switch
+                    checked={field.value}
+                    onChange={() => {
+                      field.onChange(!field.value)
+                      // Save data immediately when billing preference changes
+                      setTimeout(saveData, 0) // Use setTimeout to ensure form state is updated first
+                    }}
+                    className="group inline-flex items-center rounded-full bg-gray-200 transition data-checked:bg-blue-600 cursor-pointer w-10 h-5"
+                  >
+                    <span className="size-3 translate-x-1 rounded-full bg-white transition group-data-checked:translate-x-6" />
+                  </Switch>
+                )}
+              />
+
+              <span className={cn(
+                'text-sm font-medium',
+                {
+                  'text-blue-950': isYearly,
+                  'text-grey-500': !isYearly
+                }
+              )}>
+                Yearly
+              </span>
+            </div>
+          </Form>
+
+        </WizardContent>
+
+        <WizardNavigation
+          showBack={true}
+          onBack={handleGoBack}
+          onNext={methods.handleSubmit(onSubmit)}
+          className="pt-0"
+        />
+      </FormProvider>
     </>
   );
 }

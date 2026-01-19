@@ -1,9 +1,10 @@
 'use client'
 
-import { FormHeader, WizardNavigation } from '@/components/ui';
+import { FormHeader, WizardContent, WizardNavigation } from '@/components/ui';
 import { useRouter } from 'next/navigation';
 import { useWizard } from '@/lib/WizardContext';
 import Link from 'next/link';
+import DesignControl from '@/components/DesignControl';
 
 const plans = [
   {
@@ -44,7 +45,7 @@ const addOns = [
 export default function Step4() {
   const { data } = useWizard()
   const router = useRouter();
-  
+
   const isYearly = data.billingYearly || false
   const selectedPlanId = data.plan || 'arcade'
   const selectedAddOns = data.addOns || []
@@ -52,10 +53,10 @@ export default function Step4() {
   const selectedPlan = plans.find(p => p.id === selectedPlanId) || plans[0]
   const selectedAddOnsData = addOns.filter(ao => selectedAddOns.includes(ao.id))
 
-  const planPrice = isYearly 
+  const planPrice = isYearly
     ? selectedPlan.monthlyPrice * 10
     : selectedPlan.monthlyPrice
-  
+
   const planPriceDisplay = isYearly
     ? `$${planPrice}/yr`
     : `$${planPrice}/mo`
@@ -86,75 +87,83 @@ export default function Step4() {
 
   return (
     <>
-      <FormHeader
-        title="Finishing up"
-        description="Double-check everything looks OK before confirming."
+      <DesignControl
+        srcMobile="/design/mobile-design-step-4-yearly.jpg"
+        srcDesktop="/design/desktop-design-step-4-yearly.jpg"
+        className=""
       />
 
-      <div className="mt-9 flex flex-1 flex-col">
-        {/* Summary Card */}
-        <div className="bg-blue-50 rounded-lg p-6">
-          {/* Plan Summary */}
-          <div className="flex items-center justify-between">
-            <div className="flex flex-col">
-              <div className="flex items-center gap-3">
-                <span className="text-blue-950 font-medium">
-                  {selectedPlan.name} ({isYearly ? 'Yearly' : 'Monthly'})
-                </span>
+      <WizardContent>
+        <FormHeader
+          title="Finishing up"
+          description="Double-check everything looks OK before confirming."
+        />
+
+        <div className="mt-5 md:mt-9 flex flex-1 flex-col">
+          {/* Summary Card */}
+          <div className="bg-blue-50 rounded-lg p-4 md:p-6 md:py-4">
+            {/* Plan Summary */}
+            <div className="flex items-center justify-between">
+              <div className="flex flex-col">
+                <div className="flex items-center gap-3">
+                  <span className="text-blue-950 text-[14px] md:text-[16px] font-medium">
+                    {selectedPlan.name} ({isYearly ? 'Yearly' : 'Monthly'})
+                  </span>
+                </div>
+                <Link
+                  href="/wizard/step2"
+                  className="text-sm text-grey-500 underline hover:text-purple-600 md:mt-[2px]"
+                >
+                  Change
+                </Link>
               </div>
-              <Link 
-                href="/wizard/step2"
-                className="text-sm text-grey-500 underline hover:text-purple-600 mt-1"
-              >
-                Change
-              </Link>
+              <span className="text-blue-950 text-[14px] md:text-[16px] font-bold">
+                {planPriceDisplay}
+              </span>
             </div>
-            <span className="text-blue-950 font-bold">
-              {planPriceDisplay}
-            </span>
+
+            {/* Divider */}
+            {selectedAddOnsData.length > 0 && (
+              <div className="border-t border-purple-200 my-[10px] md:mt-6 md:mb-4"></div>
+            )}
+
+            {/* Add-ons Summary */}
+            {selectedAddOnsData.length > 0 && (
+              <div className="flex flex-col gap-4">
+                {selectedAddOnsData.map((addOn) => {
+                  const addOnPrice = isYearly
+                    ? `+$${addOn.monthlyPrice * 10}/yr`
+                    : `+$${addOn.monthlyPrice}/mo`
+
+                  return (
+                    <div key={addOn.id} className="flex items-center justify-between">
+                      <span className="text-grey-500 text-sm">{addOn.name}</span>
+                      <span className="text-blue-950 text-sm">{addOnPrice}</span>
+                    </div>
+                  )
+                })}
+              </div>
+            )}
           </div>
 
-          {/* Divider */}
-          {selectedAddOnsData.length > 0 && (
-            <div className="border-t border-purple-200 my-4"></div>
-          )}
-
-          {/* Add-ons Summary */}
-          {selectedAddOnsData.length > 0 && (
-            <div className="flex flex-col gap-4">
-              {selectedAddOnsData.map((addOn) => {
-                const addOnPrice = isYearly
-                  ? `+$${addOn.monthlyPrice * 10}/yr`
-                  : `+$${addOn.monthlyPrice}/mo`
-                
-                return (
-                  <div key={addOn.id} className="flex items-center justify-between">
-                    <span className="text-grey-500 text-sm">{addOn.name}</span>
-                    <span className="text-blue-950 text-sm">{addOnPrice}</span>
-                  </div>
-                )
-              })}
-            </div>
-          )}
+          {/* Total */}
+          <div className="flex items-center justify-between px-4 md:px-6 mt-5 md:mt-[30px]">
+            <span className="text-grey-500 text-sm">
+              Total (per {billingPeriod})
+            </span>
+            <span className="text-purple-600 text-[16px] md:text-[20px] font-bold">
+              +{totalDisplay}
+            </span>
+          </div>
         </div>
+      </WizardContent>
 
-        {/* Total */}
-        <div className="flex items-center justify-between px-6 mt-6">
-          <span className="text-grey-500 text-sm">
-            Total (per {billingPeriod})
-          </span>
-          <span className="text-purple-600 text-lg font-bold">
-            {totalDisplay}
-          </span>
-        </div>
-
-        <WizardNavigation
-          showBack={true}
-          onBack={handleGoBack}
-          onNext={handleConfirm}
-          nextLabel="Confirm"
-        />
-      </div>
+      <WizardNavigation
+        showBack={true}
+        onBack={handleGoBack}
+        onNext={handleConfirm}
+        nextLabel="Confirm"
+      />
     </>
   );
 }

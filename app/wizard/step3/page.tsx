@@ -1,10 +1,11 @@
 'use client'
 
 import { useEffect } from 'react';
-import { FormHeader, WizardNavigation, AddOnCard } from '@/components/ui';
+import { FormHeader, WizardNavigation, AddOnCard, WizardContent, Form } from '@/components/ui';
 import { useForm, FormProvider, Controller } from "react-hook-form"
 import { useRouter } from 'next/navigation';
 import { useWizard } from '@/lib/WizardContext';
+import DesignControl from '@/components/DesignControl';
 
 type Inputs = {
   addOns: string[];
@@ -66,61 +67,71 @@ export default function Step3() {
 
   return (
     <>
-      <FormHeader
-        title="Pick add-ons"
-        description="Add-ons help enhance your gaming experience."
+      <DesignControl
+        srcMobile="/design/mobile-design-step-3-yearly.jpg"
+        srcDesktop="/design/desktop-design-step-3-yearly.jpg"
+        className=""
       />
 
       <FormProvider {...methods}>
-        <form
-          onSubmit={methods.handleSubmit(onSubmit)}
-          className="mt-9 flex flex-1 flex-col"
-        >
-          {/* Add-on Cards */}
-          <div className="flex flex-col gap-4">
-            {addOns.map((addOn) => {
-              const price = isYearly
-                ? `+$${addOn.monthlyPrice * 10}/yr`
-                : `+$${addOn.monthlyPrice}/mo`
-
-              return (
-                <Controller
-                  key={addOn.id}
-                  name="addOns"
-                  control={methods.control}
-                  render={({ field }) => {
-                    const fieldValue = field.value || []
-                    const isChecked = fieldValue.includes(addOn.id)
-                    return (
-                      <AddOnCard
-                        addOn={addOn}
-                        price={price}
-                        isSelected={isChecked}
-                        checked={isChecked}
-                        onChange={(e) => {
-                          const currentAddOns = fieldValue
-                          if (e.target.checked) {
-                            field.onChange([...currentAddOns, addOn.id])
-                          } else {
-                            field.onChange(currentAddOns.filter((id: string) => id !== addOn.id))
-                          }
-                          setTimeout(saveData, 0)
-                        }}
-                      />
-                    )
-                  }}
-                />
-              );
-            })}
-          </div>
-
-          <WizardNavigation
-            showBack={true}
-            onBack={handleGoBack}
+        <WizardContent>
+          <FormHeader
+            title="Pick add-ons"
+            description="Add-ons help enhance your gaming experience."
           />
 
-        </form>
-      </FormProvider>      
+          <Form
+            onSubmit={onSubmit}
+            className="mt-5 md:mt-9 flex flex-1 flex-col"
+          >
+            {/* Add-on Cards */}
+            <div className="flex flex-col gap-3 md:gap-4">
+              {addOns.map((addOn) => {
+                const price = isYearly
+                  ? `+$${addOn.monthlyPrice * 10}/yr`
+                  : `+$${addOn.monthlyPrice}/mo`
+
+                return (
+                  <Controller
+                    key={addOn.id}
+                    name="addOns"
+                    control={methods.control}
+                    render={({ field }) => {
+                      const fieldValue = field.value || []
+                      const isChecked = fieldValue.includes(addOn.id)
+                      return (
+                        <AddOnCard
+                          addOn={addOn}
+                          price={price}
+                          isSelected={isChecked}
+                          checked={isChecked}
+                          onChange={(e) => {
+                            const currentAddOns = fieldValue
+                            if (e.target.checked) {
+                              field.onChange([...currentAddOns, addOn.id])
+                            } else {
+                              field.onChange(currentAddOns.filter((id: string) => id !== addOn.id))
+                            }
+                            setTimeout(saveData, 0)
+                          }}
+                        />
+                      )
+                    }}
+                  />
+                );
+              })}
+            </div>
+          </Form>
+        </WizardContent>
+
+        <WizardNavigation
+          showBack={true}
+          onBack={handleGoBack}
+          onNext={methods.handleSubmit(onSubmit)}
+          className="mt-auto"
+        />
+
+      </FormProvider>
     </>
   );
 }

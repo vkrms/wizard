@@ -1,6 +1,6 @@
 'use client'
 
-import { FormHeader, TextField, WizardNavigation } from '@/components/ui';
+import { Form, FormHeader, TextField, WizardNavigation, WizardContent } from '@/components/ui';
 import { useForm, FormProvider } from "react-hook-form"
 import { useRouter } from 'next/navigation'
 import { useWizard } from '@/lib/WizardContext'
@@ -28,20 +28,19 @@ export default function Step1() {
     router.push('/wizard/step2')
   }
 
+  const handleNext = methods.handleSubmit(onSubmit)
+
   return (
     <>
-      <div className="max-w-[384px]">
-        <FormHeader
-          title="Personal info"
-          description="Please provide your name, email address, and phone number."
-        />
+      <FormProvider {...methods}>
+        <WizardContent>
+          <FormHeader
+            title="Personal info"
+            description="Please provide your name, email address, and phone number."
+          />
 
-        <FormProvider {...methods}>
-          <form
-            onSubmit={methods.handleSubmit(onSubmit)}
-            className="mt-9 flex flex-1 flex-col"
-          >
-            <div className="flex flex-col gap-6">
+          <Form onSubmit={onSubmit} className="mt-5 md:mt-8">
+            <div className="flex flex-col gap-3 md:gap-5 max-w-[446px]">
               <TextField
                 label="Name"
                 name="name"
@@ -66,14 +65,14 @@ export default function Step1() {
                 rules={{ required: "This field is required" }}
               />
             </div>
+          </Form>
+        </WizardContent>
 
-            <WizardNavigation
-              showBack={false}
-            />
-            
-          </form>
-        </FormProvider>
-      </div>
+        <WizardNavigation
+          showBack={false}
+          onNext={handleNext}
+        />
+      </FormProvider>
     </>
   );
 }
