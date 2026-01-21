@@ -6,28 +6,22 @@ import Image from 'next/image';
 
 export default function Step5() {
   return (
-    <>
-      <DesignControl
-        srcMobile="/design/mobile-design-step-5.jpg"
-        srcDesktop="/design/desktop-design-step-5.jpg"
-        className=""
-      />
-      
+    <>     
       <WizardContent>
-        <div className="flex flex-col items-center justify-center text-center mt-14 md:mt-18 mb-12 md:py-16">
+        <div className="flex flex-col items-center justify-center text-center mt-14 sm:mt-18 mb-12 sm:py-16">
           {/* Thank You Icon */}
-          <div className="mb-4 md:mb-6 flex shrink-0 items-center justify-center">
+          <div className="mb-4 sm:mb-6 flex shrink-0 items-center justify-center">
             <Image 
               src="/icon-thank-you.svg" 
               alt="Thank you" 
               width={80} 
               height={80}
-              className="w-14 h-auto md:w-auto"
+              className="w-14 h-auto sm:w-auto"
             />
           </div>
 
           {/* Heading */}
-          <h1 className="text-[24px] md:text-[32px] font-bold text-blue-950">
+          <h1 className="text-[24px] sm:text-[32px] font-bold text-blue-950">
             Thank you!
           </h1>
 
@@ -46,5 +40,5 @@ export default function Step5() {
         </div>
       </WizardContent>
     </>
-  );
+  )
 }

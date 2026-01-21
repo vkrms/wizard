@@ -47,3 +47,13 @@ body {
     background-image: url(/bg-sidebar-desktop.svg);
   }
 }
+
+.custom-checkbox {
+  background-image: url(/icon-checkmark.svg);
+  
+  @apply rounded border border-gray-300 appearance-none bg-no-repeat bg-size-[0%] bg-center transition-all duration-150 ease-in-out;
+
+  &:checked {
+    @apply bg-purple-600 border-purple-600 bg-size-[72%];
+  }
+}

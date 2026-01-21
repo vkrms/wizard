@@ -87,44 +87,38 @@ export default function Step4() {
 
   return (
     <>
-      <DesignControl
-        srcMobile="/design/mobile-design-step-4-yearly.jpg"
-        srcDesktop="/design/desktop-design-step-4-yearly.jpg"
-        className=""
-      />
-
       <WizardContent>
         <FormHeader
           title="Finishing up"
           description="Double-check everything looks OK before confirming."
         />
 
-        <div className="mt-5 md:mt-9 flex flex-1 flex-col">
+        <div className="mt-5 sm:mt-9 flex flex-1 flex-col">
           {/* Summary Card */}
-          <div className="bg-blue-50 rounded-lg p-4 md:p-6 md:py-4">
+          <div className="bg-blue-50 rounded-lg p-4 sm:p-6 sm:py-4">
             {/* Plan Summary */}
             <div className="flex items-center justify-between">
               <div className="flex flex-col">
                 <div className="flex items-center gap-3">
-                  <span className="text-blue-950 text-[14px] md:text-[16px] font-medium">
+                  <span className="text-blue-950 text-[14px] sm:text-[16px] font-medium">
                     {selectedPlan.name} ({isYearly ? 'Yearly' : 'Monthly'})
                   </span>
                 </div>
                 <Link
                   href="/wizard/step2"
-                  className="text-sm text-grey-500 underline hover:text-purple-600 md:mt-[2px]"
+                  className="text-sm text-grey-500 underline hover:text-purple-600 sm:mt-[2px]"
                 >
                   Change
                 </Link>
               </div>
-              <span className="text-blue-950 text-[14px] md:text-[16px] font-bold">
+              <span className="text-blue-950 text-[14px] sm:text-[16px] font-bold">
                 {planPriceDisplay}
               </span>
             </div>
 
             {/* Divider */}
             {selectedAddOnsData.length > 0 && (
-              <div className="border-t border-purple-200 my-[10px] md:mt-6 md:mb-4"></div>
+              <div className="border-t border-purple-200 my-[10px] sm:mt-6 sm:mb-4"></div>
             )}
 
             {/* Add-ons Summary */}
@@ -147,11 +141,11 @@ export default function Step4() {
           </div>
 
           {/* Total */}
-          <div className="flex items-center justify-between px-4 md:px-6 mt-5 md:mt-[30px]">
+          <div className="flex items-center justify-between px-4 sm:px-6 mt-5 sm:mt-[30px]">
             <span className="text-grey-500 text-sm">
               Total (per {billingPeriod})
             </span>
-            <span className="text-purple-600 text-[16px] md:text-[20px] font-bold">
+            <span className="text-purple-600 text-[16px] sm:text-[20px] font-bold">
               +{totalDisplay}
             </span>
           </div>
@@ -163,6 +157,7 @@ export default function Step4() {
         onBack={handleGoBack}
         onNext={handleConfirm}
         nextLabel="Confirm"
+        nextVariant="confirm"
       />
     </>
   );

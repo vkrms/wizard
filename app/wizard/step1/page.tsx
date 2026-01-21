@@ -39,8 +39,8 @@ export default function Step1() {
             description="Please provide your name, email address, and phone number."
           />
 
-          <Form onSubmit={onSubmit} className="mt-5 md:mt-8">
-            <div className="flex flex-col gap-3 md:gap-5 max-w-[446px]">
+          <Form onSubmit={onSubmit} className="mt-5 sm:mt-8">
+            <div className="flex flex-col gap-3 sm:gap-5 max-w-[446px]">
               <TextField
                 label="Name"
                 name="name"

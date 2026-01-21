@@ -16,12 +16,17 @@ export interface PlanCardProps extends Omit<InputHTMLAttributes<HTMLInputElement
 
 const PlanCard = ({ className, plan, price, isSelected, yearlyPerk, ...props }: PlanCardProps) => {
   return (
-    <label className={cn(
-      'flex flex-row md:flex-col gap-3 md:gap-11 p-4 rounded-lg border-2 cursor-pointer transition-all md:h-[184px]',
-      isSelected
-        ? 'border-purple-600 bg-blue-50'
-        : 'border-purple-200 bg-white hover:border-purple-600',
-      className
+    <label
+      tabIndex={0}
+      className={cn(
+        'flex flex-row md:flex-col gap-3 md:gap-11 p-4 rounded-lg border-2 cursor-pointer transition-all md:h-[184px]',
+
+        'focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-1',
+        
+        isSelected
+          ? 'border-purple-600 bg-blue-50'
+          : 'border-purple-200 bg-white hover:border-purple-600',
+        className
     )}>
       <input type="radio" className="sr-only" value={plan.id} {...props} />
       <div className="shrink-0">

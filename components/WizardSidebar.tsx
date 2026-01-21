@@ -38,11 +38,11 @@ export default function WizardSidebar({ currentStep }: WizardSidebarProps) {
 
   return (
     <aside
-      className="relative flex flex-col md:rounded-lg p-8 pt-8 md:pt-10 overflow-hidden items-center md:w-full md:max-w-[276px] md:items-start sidebar h-[172px] md:h-auto"
+      className="relative flex flex-col sm:rounded-lg p-8 pt-8 sm:pt-10 overflow-hidden items-center sm:w-fit md:w-full md:max-w-[276px] sm:items-start sidebar h-[172px] sm:h-auto"
       data-testid="wizard-sidebar"
     >
       {/* Steps */}
-      <nav className="relative z-10 flex md:flex-col gap-4 md:gap-7">
+      <nav className="relative z-10 flex sm:flex-col gap-4 sm:gap-7 pr-2">
         {steps.map((step) => {
           const isActive = step.number === activeStepNumber;
 
@@ -61,7 +61,7 @@ export default function WizardSidebar({ currentStep }: WizardSidebarProps) {
               </div>
 
               {/* Step Text */}
-              <div className="hidden md:flex flex-col">
+              <div className="hidden sm:flex flex-col">
                 <span className="text-xs font-normal tracking-wide text-blue-300">
                   {step.label}
                 </span>
@@ -76,4 +76,3 @@ export default function WizardSidebar({ currentStep }: WizardSidebarProps) {
     </aside>
   );
 }
-

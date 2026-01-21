@@ -81,12 +81,6 @@ export default function Step2() {
 
   return (
     <>
-      <DesignControl
-        srcMobile="/design/mobile-design-step-2-yearly.jpg"
-        srcDesktop="/design/desktop-design-step-2-yearly.jpg"
-        className="bob1522"
-      />
-
       <FormProvider {...methods}>
         <WizardContent className='flex-1 max-h-[564px]'>
           <FormHeader
@@ -96,7 +90,7 @@ export default function Step2() {
 
           <Form
             onSubmit={onSubmit}
-            className="mt-5 md:mt-9 flex flex-1 flex-col"
+            className="mt-5 sm:mt-9 flex flex-1 flex-col"
           >
             {/* Plan Cards Grid */}
             <div className="grid gap-[10px] md:gap-4 grid-cols-1 md:grid-cols-3">
@@ -123,7 +117,7 @@ export default function Step2() {
             </div>
 
             {/* Billing Toggle */}
-            <div className="flex items-center justify-center gap-6 mt-5 md:mt-8 bg-blue-100 rounded-lg py-4 mb-0 md:mb-8 h-[48px] md:h-[44px]">
+            <div className="flex items-center justify-center gap-6 mt-5 sm:mt-8 bg-blue-100 rounded-lg py-4 mb-0 sm:mb-8 h-[48px] sm:h-[44px]">
               <span className={cn(
                 'text-sm font-medium',
                 {
@@ -145,7 +139,10 @@ export default function Step2() {
                       // Save data immediately when billing preference changes
                       setTimeout(saveData, 0) // Use setTimeout to ensure form state is updated first
                     }}
-                    className="group inline-flex items-center rounded-full bg-gray-200 transition data-checked:bg-blue-600 cursor-pointer w-10 h-5"
+                    className={cn(
+                      "group inline-flex items-center rounded-full transition bg-blue-950 cursor-pointer w-10 h-5",
+                      'focus:outline-none focus:ring-2 focus:ring-purple-600 focus:ring-offset-1',
+                    )}
                   >
                     <span className="size-3 translate-x-1 rounded-full bg-white transition group-data-checked:translate-x-6" />
                   </Switch>

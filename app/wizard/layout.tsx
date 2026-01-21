@@ -6,10 +6,10 @@ export default function WizardLayout({
   children
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <div className="flex min-h-screen items-start md:items-center justify-center bg-blue-100 font-sans relative">
+    <div className="flex min-h-screen items-start sm:items-center justify-center bg-blue-100 font-sans relative">
 
       <main
-        className="flex flex-col md:flex-row md:p-4 md:bg-white md:rounded-lg min-h-[600px] w-full max-w-[944px] h-screen md:h-fit pb-10 max-h-[784px] md:max-h-[719px]"
+        className="flex flex-col sm:flex-row sm:p-4 sm:bg-white sm:rounded-lg min-h-[600px] w-full max-w-[944px] h-screen sm:h-fit pb-10 max-h-[784px] sm:max-h-[719px] sm:pr-0"
         data-testid="wizard-body"
       >
 
@@ -19,7 +19,7 @@ export default function WizardLayout({
         <div
           className={cn(
             "flex flex-1 flex-col px-4",
-            "md:px-[100px] md:pt-8 md:pb-4 md:pl-[100px] md:pr-[88px]"
+            "sm:pt-8 sm:pb-4 sm:pl-[clamp(16px,6%,100px)] sm:pr-[clamp(16px,6%,88px)]"
           )}>
           <WizardProvider>
             {children}

@@ -67,12 +67,6 @@ export default function Step3() {
 
   return (
     <>
-      <DesignControl
-        srcMobile="/design/mobile-design-step-3-yearly.jpg"
-        srcDesktop="/design/desktop-design-step-3-yearly.jpg"
-        className=""
-      />
-
       <FormProvider {...methods}>
         <WizardContent>
           <FormHeader
@@ -82,10 +76,10 @@ export default function Step3() {
 
           <Form
             onSubmit={onSubmit}
-            className="mt-5 md:mt-9 flex flex-1 flex-col"
+            className="mt-5 sm:mt-9 flex flex-1 flex-col"
           >
             {/* Add-on Cards */}
-            <div className="flex flex-col gap-3 md:gap-4">
+            <div className="flex flex-col gap-3 sm:gap-4">
               {addOns.map((addOn) => {
                 const price = isYearly
                   ? `+$${addOn.monthlyPrice * 10}/yr`
