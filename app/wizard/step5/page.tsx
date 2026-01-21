@@ -1,10 +1,17 @@
 'use client'
 
-import DesignControl from '@/components/DesignControl';
-import { WizardContent } from '@/components/ui';
-import Image from 'next/image';
+import { useEffect } from 'react'
+import { WizardContent } from '@/components/ui'
+import Image from 'next/image'
+import { useWizard } from '@/lib/WizardContext'
 
 export default function Step5() {
+  const { data } = useWizard()
+
+  useEffect(() => {
+    console.log('Wizard form data:', data)
+  }, [data])
+
   return (
     <>     
       <WizardContent>
