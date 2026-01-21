@@ -62,7 +62,7 @@ export default function Step3() {
   }
 
   const handleGoBack = () => {
-    router.back()
+    router.push('/wizard/step2');
   }
 
   return (

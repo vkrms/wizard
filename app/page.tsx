@@ -1,10 +1,7 @@
-import Link from "next/link"
+import { redirect } from "next/navigation";
+
 
 export default function Home() {
-  return (
-    <div className="temp">
-      <h1>Hello World</h1>
-      <Link href="/wizard/step1">Step 1</Link>
-    </div>
-  );
+  redirect("/wizard/step1");
+
 }

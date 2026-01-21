@@ -77,7 +77,7 @@ export default function Step4() {
   const billingPeriod = isYearly ? 'year' : 'month'
 
   const handleGoBack = () => {
-    router.back()
+    router.push('/wizard/step3');
   }
 
   const handleConfirm = () => {

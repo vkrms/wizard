@@ -76,7 +76,7 @@ export default function Step2() {
   }
 
   const handleGoBack = () => {
-    router.back();
+    router.push('/wizard/step1');
   }
 
   return (
