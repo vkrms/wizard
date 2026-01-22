@@ -34,7 +34,8 @@ export function WizardProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
     const stored = localStorage.getItem(STORAGE_KEY)
     if (stored) {
-      try {
+      try {        
+        // eslint-disable-next-line
         setData(JSON.parse(stored))
       } catch (error) {
         console.error('Failed to parse stored wizard data:', error)

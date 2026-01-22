@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 interface WizardNavigationProps {
   showBack?: boolean;
   onBack?: () => void;
-  onNext: () => void;
+  onNext?: () => void;
   nextLabel?: string;
   backLabel?: string;
   nextVariant?: ButtonProps['variant'];
