@@ -2,20 +2,25 @@
 
 import { Form, FormHeader, TextField, WizardNavigation, WizardContent } from '@/components/ui';
 import { useForm, FormProvider } from "react-hook-form"
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
 import { useRouter } from 'next/navigation'
 import { useWizard } from '@/lib/WizardContext'
 
-type Inputs = {
-  name: string
-  email: string
-  phone: string
-}
+const formSchema = z.object({
+  name: z.string().min(2, 'This field is required'),
+  email: z.email('Please enter a valid email'),
+  phone: z.string().min(1, 'This field is required').regex(/^\d{6,}$/, 'Phone number must contain at least 6 digits')
+})
+
+type Inputs = z.infer<typeof formSchema>
 
 export default function Step1() {
   const { data, updateData } = useWizard()
   const router = useRouter();
 
   const methods = useForm<Inputs>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
       name: data.name || '',
       email: data.email || '',
@@ -46,7 +51,6 @@ export default function Step1() {
                 name="name"
                 type="text"
                 placeholder="e.g. Stephen King"
-                rules={{ required: "This field is required" }}
               />
 
               <TextField
@@ -54,7 +58,6 @@ export default function Step1() {
                 name="email"
                 type="email"
                 placeholder="e.g. stephenking@lorem.com"
-                rules={{ required: "This field is required" }}
               />
 
               <TextField
@@ -62,7 +65,6 @@ export default function Step1() {
                 name="phone"
                 type="tel"
                 placeholder="e.g. +1 234 567 890"
-                rules={{ required: "This field is required" }}
               />
             </div>
           </Form>

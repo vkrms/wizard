@@ -3,16 +3,19 @@
 import { useEffect } from 'react';
 import { Form, FormHeader, PlanCard, WizardContent, WizardNavigation } from '@/components/ui';
 import { useForm, FormProvider, Controller } from "react-hook-form"
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
 import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Switch } from '@headlessui/react';
 import { useWizard } from '@/lib/WizardContext';
-import DesignControl from '@/components/DesignControl';
 
-type Inputs = {
-  plan: 'arcade' | 'advanced' | 'pro';
-  billingYearly: boolean;
-}
+const formSchema = z.object({
+  plan: z.enum(['arcade', 'advanced', 'pro']),
+  billingYearly: z.boolean(),
+})
+
+type Inputs = z.infer<typeof formSchema>
 
 const plans = [
   {
@@ -43,6 +46,7 @@ export default function Step2() {
   const router = useRouter();
 
   const methods = useForm<Inputs>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
       plan: data.plan || 'arcade',
       billingYearly: data.billingYearly || false,

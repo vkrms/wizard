@@ -3,13 +3,16 @@
 import { useEffect } from 'react';
 import { FormHeader, WizardNavigation, AddOnCard, WizardContent, Form } from '@/components/ui';
 import { useForm, FormProvider, Controller } from "react-hook-form"
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
 import { useRouter } from 'next/navigation';
 import { useWizard } from '@/lib/WizardContext';
-import DesignControl from '@/components/DesignControl';
 
-type Inputs = {
-  addOns: string[];
-}
+const formSchema = z.object({
+  addOns: z.array(z.string()),
+})
+
+type Inputs = z.infer<typeof formSchema>
 
 const addOns = [
   {
@@ -38,6 +41,7 @@ export default function Step3() {
   const router = useRouter();
 
   const methods = useForm<Inputs>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
       addOns: data.addOns || [],
     }
