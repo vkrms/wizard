@@ -1,13 +1,12 @@
-import { type InputHTMLAttributes } from 'react';
+import { type ComponentType, type InputHTMLAttributes, type SVGProps } from 'react';
 import { cn } from '@/lib/utils';
-import Image from 'next/image';
 
 // god, this is some type gymnastics
 export interface PlanCardProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
   plan: {
     id: string;
     name: string;
-    icon: string;
+    icon: ComponentType<SVGProps<SVGSVGElement>>;
   };
   price: string;
   isSelected?: boolean;
@@ -15,9 +14,11 @@ export interface PlanCardProps extends Omit<InputHTMLAttributes<HTMLInputElement
 }
 
 const PlanCard = ({ className, plan, price, isSelected, yearlyPerk, ...props }: PlanCardProps) => {
+  const Icon = plan.icon;
+
   return (
     <label
-      tabIndex={0}
+      // tabIndex={0}
       className={cn(
         'flex flex-row md:flex-col gap-3 md:gap-11 p-4 rounded-lg border-2 cursor-pointer transition-all md:h-[184px]',
 
@@ -30,7 +31,7 @@ const PlanCard = ({ className, plan, price, isSelected, yearlyPerk, ...props }: 
     )}>
       <input type="radio" className="sr-only" value={plan.id} {...props} />
       <div className="shrink-0">
-        <Image src={plan.icon} alt={plan.name} width={40} height={40} className="w-10 h-10" />
+        <Icon className="w-10 h-10" role="img" aria-label={plan.name} />
       </div>
       <div className="flex flex-col">
         <span className="text-blue-950 font-medium md:leading-[1.3]">{plan.name}</span>
