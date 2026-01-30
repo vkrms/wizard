@@ -1,60 +1,23 @@
 'use client'
 
+import { useEffect } from 'react';
 import { FormHeader, WizardContent, WizardNavigation } from '@/components/ui';
 import { useRouter } from 'next/navigation';
-import { useWizard } from '@/lib/WizardContext';
+import { hasRequiredDataForStep, useWizard } from '@/lib/WizardContext';
 import Link from 'next/link';
-import DesignControl from '@/components/DesignControl';
-
-const plans = [
-  {
-    id: 'arcade' as const,
-    name: 'Arcade',
-    monthlyPrice: 9,
-  },
-  {
-    id: 'advanced' as const,
-    name: 'Advanced',
-    monthlyPrice: 12,
-  },
-  {
-    id: 'pro' as const,
-    name: 'Pro',
-    monthlyPrice: 15,
-  },
-];
-
-const addOns = [
-  {
-    id: 'online-service',
-    name: 'Online service',
-    monthlyPrice: 1,
-  },
-  {
-    id: 'larger-storage',
-    name: 'Larger storage',
-    monthlyPrice: 2,
-  },
-  {
-    id: 'customizable-profile',
-    name: 'Customizable profile',
-    monthlyPrice: 2,
-  },
-];
+import { getPlanById, getAddOnsByIds, formatAddOnPrice, getYearlyPrice } from '@/lib/constants';
 
 export default function Step4() {
   const { data } = useWizard()
   const router = useRouter();
+  const isAllowed = hasRequiredDataForStep(4, data)
 
   const isYearly = data.billingYearly || false
-  const selectedPlanId = data.plan || 'arcade'
-  const selectedAddOns = data.addOns || []
-
-  const selectedPlan = plans.find(p => p.id === selectedPlanId) || plans[0]
-  const selectedAddOnsData = addOns.filter(ao => selectedAddOns.includes(ao.id))
+  const selectedPlan = getPlanById(data.plan || 'arcade')
+  const selectedAddOnsData = getAddOnsByIds(data.addOns || [])
 
   const planPrice = isYearly
-    ? selectedPlan.monthlyPrice * 10
+    ? getYearlyPrice(selectedPlan.monthlyPrice)
     : selectedPlan.monthlyPrice
 
   const planPriceDisplay = isYearly
@@ -62,12 +25,8 @@ export default function Step4() {
     : `$${planPrice}/mo`
 
   const addOnsTotal = selectedAddOnsData.reduce((sum, ao) => {
-    return sum + (isYearly ? ao.monthlyPrice * 10 : ao.monthlyPrice)
+    return sum + (isYearly ? getYearlyPrice(ao.monthlyPrice) : ao.monthlyPrice)
   }, 0)
-
-  // const addOnsTotalDisplay = isYearly
-  //   ? `+$${addOnsTotal}/yr`
-  //   : `+$${addOnsTotal}/mo`
 
   const total = planPrice + addOnsTotal
   const totalDisplay = isYearly
@@ -75,6 +34,16 @@ export default function Step4() {
     : `$${total}/mo`
 
   const billingPeriod = isYearly ? 'year' : 'month'
+
+  useEffect(() => {
+    if (!isAllowed) {
+      router.replace('/wizard/step1')
+    }
+  }, [isAllowed, router])
+
+  if (!isAllowed) {
+    return null
+  }
 
   const handleGoBack = () => {
     router.push('/wizard/step3');
@@ -124,18 +93,12 @@ export default function Step4() {
             {/* Add-ons Summary */}
             {selectedAddOnsData.length > 0 && (
               <div className="flex flex-col gap-4">
-                {selectedAddOnsData.map((addOn) => {
-                  const addOnPrice = isYearly
-                    ? `+$${addOn.monthlyPrice * 10}/yr`
-                    : `+$${addOn.monthlyPrice}/mo`
-
-                  return (
-                    <div key={addOn.id} className="flex items-center justify-between">
-                      <span className="text-grey-500 text-sm">{addOn.name}</span>
-                      <span className="text-blue-950 text-sm">{addOnPrice}</span>
-                    </div>
-                  )
-                })}
+                {selectedAddOnsData.map((addOn) => (
+                  <div key={addOn.id} className="flex items-center justify-between">
+                    <span className="text-grey-500 text-sm">{addOn.name}</span>
+                    <span className="text-blue-950 text-sm">{formatAddOnPrice(addOn, isYearly)}</span>
+                  </div>
+                ))}
               </div>
             )}
           </div>
