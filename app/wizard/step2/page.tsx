@@ -8,7 +8,8 @@ import { z } from 'zod'
 import { useRouter } from 'next/navigation';
 import { cn } from '@/lib/utils';
 import { Switch } from '@headlessui/react';
-import { useWizard } from '@/lib/WizardContext';
+import { hasRequiredDataForStep, useWizard } from '@/lib/WizardContext';
+import { PLANS, formatPlanPrice } from '@/lib/constants';
 
 const formSchema = z.object({
   plan: z.enum(['arcade', 'advanced', 'pro']),
@@ -17,33 +18,10 @@ const formSchema = z.object({
 
 type Inputs = z.infer<typeof formSchema>
 
-const plans = [
-  {
-    id: 'arcade' as const,
-    name: 'Arcade',
-    icon: '/icon-arcade.svg',
-    monthlyPrice: 9,
-    yearlyPerk: '2 months free',
-  },
-  {
-    id: 'advanced' as const,
-    name: 'Advanced',
-    icon: '/icon-advanced.svg',
-    monthlyPrice: 12,
-    yearlyPerk: '2 months free',
-  },
-  {
-    id: 'pro' as const,
-    name: 'Pro',
-    icon: '/icon-pro.svg',
-    monthlyPrice: 15,
-    yearlyPerk: '2 months free',
-  },
-];
-
 export default function Step2() {
   const { data, updateData } = useWizard()
   const router = useRouter();
+  const isAllowed = hasRequiredDataForStep(2, data)
 
   const methods = useForm<Inputs>({
     resolver: zodResolver(formSchema),
@@ -53,26 +31,27 @@ export default function Step2() {
     }
   });
 
-  // Update form values when context data changes
   useEffect(() => {
-    if (data.plan) {
-      methods.setValue('plan', data.plan)
+    if (!isAllowed) {
+      router.replace('/wizard/step1')
     }
-    if (data.billingYearly !== undefined) {
-      methods.setValue('billingYearly', data.billingYearly)
-    }
-  }, [data.plan, data.billingYearly, methods])
-
-  const { register } = methods;
+  }, [isAllowed, router])
 
   const selectedPlan = methods.watch('plan');
   const isYearly = methods.watch('billingYearly');
 
-  // Save data whenever form values change
-  const saveData = () => {
-    const currentValues = methods.getValues()
-    updateData(currentValues)
+  // Auto-persist form changes to context
+  useEffect(() => {
+    if (selectedPlan !== data.plan || isYearly !== data.billingYearly) {
+      updateData({ plan: selectedPlan, billingYearly: isYearly })
+    }
+  }, [selectedPlan, isYearly, data.plan, data.billingYearly, updateData])
+
+  if (!isAllowed) {
+    return null
   }
+
+  const { register } = methods;
 
   const onSubmit = (formData: Inputs) => {
     updateData(formData)
@@ -98,26 +77,16 @@ export default function Step2() {
           >
             {/* Plan Cards Grid */}
             <div className="grid gap-[10px] md:gap-4 grid-cols-1 md:grid-cols-3">
-              {plans.map((plan) => {
-                const price = isYearly
-                  ? `$${plan.monthlyPrice * 10}/yr`
-                  : `$${plan.monthlyPrice}/mo`
-
-                const yearlyPerk = isYearly ? plan.yearlyPerk : undefined
-
-                return (
-                  <PlanCard
-                    key={plan.id}
-                    plan={plan}
-                    price={price}
-                    yearlyPerk={yearlyPerk}
-                    isSelected={selectedPlan === plan.id}
-                    {...register('plan', {
-                      onChange: saveData
-                    })}
-                  />
-                );
-              })}
+              {PLANS.map((plan) => (
+                <PlanCard
+                  key={plan.id}
+                  plan={plan}
+                  price={formatPlanPrice(plan, isYearly)}
+                  yearlyPerk={isYearly ? plan.yearlyPerk : undefined}
+                  isSelected={selectedPlan === plan.id}
+                  {...register('plan')}
+                />
+              ))}
             </div>
 
             {/* Billing Toggle */}
@@ -140,8 +109,6 @@ export default function Step2() {
                     checked={field.value}
                     onChange={() => {
                       field.onChange(!field.value)
-                      // Save data immediately when billing preference changes
-                      setTimeout(saveData, 0) // Use setTimeout to ensure form state is updated first
                     }}
                     className={cn(
                       "group inline-flex items-center rounded-full transition bg-blue-950 cursor-pointer w-10 h-5",

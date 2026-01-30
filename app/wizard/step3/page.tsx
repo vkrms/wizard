@@ -1,136 +1,76 @@
 'use client'
 
-import { useEffect } from 'react';
-import { FormHeader, WizardNavigation, AddOnCard, WizardContent, Form } from '@/components/ui';
-import { useForm, FormProvider, Controller } from "react-hook-form"
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
+import { useState, useEffect } from 'react';
+import { FormHeader, WizardNavigation, AddOnCard, WizardContent } from '@/components/ui';
 import { useRouter } from 'next/navigation';
-import { useWizard } from '@/lib/WizardContext';
-
-const formSchema = z.object({
-  addOns: z.array(z.string()),
-})
-
-type Inputs = z.infer<typeof formSchema>
-
-const addOns = [
-  {
-    id: 'online-service',
-    name: 'Online service',
-    description: 'Access to multiplayer games',
-    monthlyPrice: 1,
-  },
-  {
-    id: 'larger-storage',
-    name: 'Larger storage',
-    description: 'Extra 1TB of cloud save',
-    monthlyPrice: 2,
-  },
-  {
-    id: 'customizable-profile',
-    name: 'Customizable profile',
-    description: 'Custom theme on your profile',
-    monthlyPrice: 2,
-  },
-];
+import { hasRequiredDataForStep, useWizard } from '@/lib/WizardContext';
+import { ADD_ONS, formatAddOnPrice } from '@/lib/constants';
 
 export default function Step3() {
   const { data, updateData } = useWizard()
+  const router = useRouter()
   const isYearly = data.billingYearly || false
-  const router = useRouter();
+  const isAllowed = hasRequiredDataForStep(3, data)
 
-  const methods = useForm<Inputs>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      addOns: data.addOns || [],
-    }
-  });
+  const [addOns, setAddOns] = useState<string[]>(data.addOns || [])
 
-  // Update form values when context data changes
   useEffect(() => {
-    if (data.addOns) {
-      methods.setValue('addOns', data.addOns)
+    if (!isAllowed) {
+      router.replace('/wizard/step1')
     }
-  }, [data.addOns, methods])
+  }, [isAllowed, router])
 
-  // Save data whenever form values change
-  const saveData = () => {
-    const currentValues = methods.getValues()
-    updateData(currentValues)
+  if (!isAllowed) {
+    return null
   }
 
-  const onSubmit = (formData: Inputs) => {
-    updateData(formData)
-    router.push('/wizard/step4');
+  const toggleAddOn = (id: string) => {
+    const updated = addOns.includes(id)
+      ? addOns.filter(a => a !== id)
+      : [...addOns, id]
+    setAddOns(updated)
+    updateData({ addOns: updated })
   }
 
   const handleGoBack = () => {
-    router.push('/wizard/step2');
+    router.push('/wizard/step2')
+  }
+
+  const handleNext = () => {
+    router.push('/wizard/step4')
   }
 
   return (
     <>
-      <FormProvider {...methods}>
-        <WizardContent>
-          <FormHeader
-            title="Pick add-ons"
-            description="Add-ons help enhance your gaming experience."
-          />
-
-          <Form
-            onSubmit={onSubmit}
-            className="mt-5 sm:mt-9 flex flex-1 flex-col"
-          >
-            {/* Add-on Cards */}
-            <div className="flex flex-col gap-3 sm:gap-4">
-              {addOns.map((addOn) => {
-                const price = isYearly
-                  ? `+$${addOn.monthlyPrice * 10}/yr`
-                  : `+$${addOn.monthlyPrice}/mo`
-
-                return (
-                  <Controller
-                    key={addOn.id}
-                    name="addOns"
-                    control={methods.control}
-                    render={({ field }) => {
-                      const fieldValue = field.value || []
-                      const isChecked = fieldValue.includes(addOn.id)
-                      return (
-                        <AddOnCard
-                          addOn={addOn}
-                          price={price}
-                          isSelected={isChecked}
-                          checked={isChecked}
-                          onChange={(e) => {
-                            const currentAddOns = fieldValue
-                            if (e.target.checked) {
-                              field.onChange([...currentAddOns, addOn.id])
-                            } else {
-                              field.onChange(currentAddOns.filter((id: string) => id !== addOn.id))
-                            }
-                            setTimeout(saveData, 0)
-                          }}
-                        />
-                      )
-                    }}
-                  />
-                );
-              })}
-            </div>
-          </Form>
-        </WizardContent>
-
-        <WizardNavigation
-          showBack={true}
-          onBack={handleGoBack}
-          onNext={methods.handleSubmit(onSubmit)}
-          className="mt-auto"
+      <WizardContent>
+        <FormHeader
+          title="Pick add-ons"
+          description="Add-ons help enhance your gaming experience."
         />
 
-      </FormProvider>
+        <div className="mt-5 sm:mt-9 flex flex-1 flex-col">
+          <div className="flex flex-col gap-3 sm:gap-4">
+            {ADD_ONS.map((addOn) => (
+              <AddOnCard
+                key={addOn.id}
+                addOn={addOn}
+                price={formatAddOnPrice(addOn, isYearly)}
+                isSelected={addOns.includes(addOn.id)}
+                checked={addOns.includes(addOn.id)}
+                onChange={() => toggleAddOn(addOn.id)}
+              />
+            ))}
+          </div>
+        </div>
+      </WizardContent>
+
+      <WizardNavigation
+        showBack={true}
+        onBack={handleGoBack}
+        onNext={handleNext}
+        className="mt-auto"
+      />
     </>
-  );
+  )
 }
 
