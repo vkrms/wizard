@@ -10,7 +10,10 @@ import { useWizard } from '@/lib/WizardContext'
 const formSchema = z.object({
   name: z.string().min(2, 'This field is required'),
   email: z.email('Please enter a valid email'),
-  phone: z.string().min(1, 'This field is required').regex(/^\d{6,}$/, 'Phone number must contain at least 6 digits')
+  phone: z.string()
+    .min(1, 'This field is required')
+    .regex(/^[\d ]+$/, 'Please enter a valid phone number')
+    .refine(val => val.replace(/ /g, '').length >= 6, 'Phone number must contain at least 6 digits')
 })
 
 type Inputs = z.infer<typeof formSchema>
@@ -64,7 +67,7 @@ export default function Step1() {
                 label="Phone Number"
                 name="phone"
                 type="tel"
-                placeholder="e.g. +1 234 567 890"
+                placeholder="e.g. 66 234 567 890"
               />
             </div>
           </Form>
