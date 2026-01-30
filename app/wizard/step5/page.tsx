@@ -2,15 +2,31 @@
 
 import { useEffect } from 'react'
 import { WizardContent } from '@/components/ui'
-import Image from 'next/image'
-import { useWizard } from '@/lib/WizardContext'
+import ThankYouIcon from '@/public/icon-thank-you.svg'
+import { useRouter } from 'next/navigation'
+import { hasRequiredDataForStep, useWizard } from '@/lib/WizardContext'
 
 export default function Step5() {
-  const { data } = useWizard()
+  const { data, clearStorage } = useWizard()
+  const router = useRouter()
+  const isAllowed = hasRequiredDataForStep(5, data)
 
   useEffect(() => {
     console.log('Wizard form data:', data)
   }, [data])
+
+  useEffect(() => {
+    if (!isAllowed) {
+      router.replace('/wizard/step1')
+      return
+    }
+
+    clearStorage()
+  }, [isAllowed, router, clearStorage])
+
+  if (!isAllowed) {
+    return null
+  }
 
   return (
     <>     
@@ -18,13 +34,7 @@ export default function Step5() {
         <div className="flex flex-col items-center justify-center text-center mt-14 sm:mt-18 mb-12 sm:py-16">
           {/* Thank You Icon */}
           <div className="mb-4 sm:mb-6 flex shrink-0 items-center justify-center">
-            <Image 
-              src="/icon-thank-you.svg" 
-              alt="Thank you" 
-              width={80} 
-              height={80}
-              className="w-14 h-auto sm:w-auto"
-            />
+            <ThankYouIcon className="w-14 h-auto sm:w-auto" role="img" aria-label="Thank you" />
           </div>
 
           {/* Heading */}
