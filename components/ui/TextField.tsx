@@ -1,32 +1,36 @@
 "use client";
 
-import { type InputHTMLAttributes } from 'react';
-import { useFormContext, RegisterOptions, FieldValues, Path } from 'react-hook-form';
+import { useFormContext } from 'react-hook-form';
 import { FormField } from './FormField';
 import { Input } from './Input';
 
-interface TextFieldProps<T extends FieldValues> extends Omit<InputHTMLAttributes<HTMLInputElement>, 'name'> {
+type TextFieldProps = {
   label: string;
-  name: Path<T>;
-  rules?: RegisterOptions<T>;
-}
+  name: string;
+  placeholder?: string;
+  type?: 'text' | 'email' | 'tel';
+  disabled?: boolean;
+  className?: string;
+};
 
-export function TextField<T extends FieldValues>({
+export function TextField({
   label,
   name,
-  rules,
+  // rules,
   ...inputProps
-}: TextFieldProps<T>) {
-  const { register, formState: { errors } } = useFormContext<T>();
-  const error = errors[name];
-  const errorMessage = error?.message as string | undefined;
+}: TextFieldProps) {
+    const methods = useFormContext();
+    const { register, formState: { errors } } = methods;
 
-  return (
+    const error = errors[name];
+    const errorMessage = error?.message as string | undefined;
+
+    return (
     <FormField label={label} htmlFor={name} error={errorMessage}>
       <Input
         id={name}
         error={!!error}
-        {...register(name, rules)}
+        {...register(name /*, rules*/)}
         {...inputProps}
       />
     </FormField>
