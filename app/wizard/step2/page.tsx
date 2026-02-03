@@ -22,7 +22,7 @@ export type step2SchemaType = z.infer<typeof step2Schema>
 
 export default function Step2() {
   const router = useRouter();
-  const { plan, billingYearly } = useFormStore(s => s)
+  const { plan, billingYearly } = useFormStore()
 
   const methods = useForm<step2SchemaType>({
     resolver: zodResolver(step2Schema),
@@ -35,7 +35,7 @@ export default function Step2() {
   const isYearly = methods.watch('billingYearly')
   const selectedPlanId = methods.watch('plan')
 
-  const { setStep2, markStepComplete, markStepIncomplete } = useFormStore(s => s)
+  const { setStep2, markStepComplete, markStepIncomplete } = useFormStore()
 
   const isAllowed = useGuard(2)
 
@@ -95,10 +95,6 @@ export default function Step2() {
               </span>
 
               <Switch
-                // checked={field.value}
-                // onChange={() => {
-                //   field.onChange(!field.value)
-                // }}
                 onChange={() => {
                   methods.setValue('billingYearly', !isYearly)
                 }}
@@ -111,14 +107,6 @@ export default function Step2() {
               >
                 <span className="size-3 translate-x-1 rounded-full bg-white transition group-data-checked:translate-x-6" />
               </Switch>
-
-              {/* <Controller
-                name="billingYearly"
-                control={methods.control}
-                render={({ field }) => (
-
-                )}
-              /> */}
 
               <span className={cn(
                 'text-sm font-medium',

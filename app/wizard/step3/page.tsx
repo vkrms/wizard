@@ -18,11 +18,9 @@ export type step3SchemaType = z.infer<typeof step3Schema>
 export default function Step3() {
   const router = useRouter()
 
-  const { addOns: storedAddOns } = useFormStore(s => s)
+  const { addOns: storedAddOns } = useFormStore()
   
-  const billingYearly = useFormStore(s => s.billingYearly)
-  const setStep3 = useFormStore(s => s.setStep3)
-  const { markStepComplete, markStepIncomplete } = useFormStore(s => s)
+  const { markStepComplete, markStepIncomplete, billingYearly,setStep3 } = useFormStore()
 
   const methods = useForm<step3SchemaType>({
     resolver: zodResolver(step3Schema),
@@ -51,8 +49,6 @@ export default function Step3() {
 
     methods.setValue('addOns', updatedAddOns)
     setStep3({ addOns: methods.getValues('addOns') })
-
-    console.log({addOnId, addOns: methods.getValues('addOns')})
   }
 
   const isAllowed = useGuard(3)
