@@ -19,7 +19,7 @@ const step1Schema = z.object({
 export type step1SchemaType = z.infer<typeof step1Schema>
 
 export default function Step1() {
-  const { name, email, phone } = useFormStore(s => s)
+  const { name, email, phone } = useFormStore()
 
   const methods = useForm<step1SchemaType>({
     resolver: zodResolver(step1Schema),
@@ -28,8 +28,7 @@ export default function Step1() {
 
   const router = useRouter();
 
-  const setStep1 = useFormStore(s => s.setStep1)
-  const markStepComplete = useFormStore(s => s.markStepComplete)
+  const { setStep1, markStepComplete } = useFormStore()
 
   const onSubmit: SubmitHandler<step1SchemaType> = (data) => {    
     setStep1(data)
