@@ -4,29 +4,38 @@ import { useEffect } from 'react'
 import { WizardContent } from '@/components/ui'
 import ThankYouIcon from '@/public/icon-thank-you.svg'
 import { useRouter } from 'next/navigation'
-import { hasRequiredDataForStep, useWizard } from '@/lib/WizardContext'
+import { selectFormData, useFormStore } from '@/lib/formStore'
+import { useShallow } from 'zustand/shallow'
 
 export default function Step5() {
-  const { data, clearStorage } = useWizard()
   const router = useRouter()
-  const isAllowed = hasRequiredDataForStep(5, data)
+  // const isAllowed = hasRequiredDataForStep(5, data)
 
+
+  const formData = useFormStore(useShallow(selectFormData))
+  
   useEffect(() => {
-    console.log('Wizard form data:', data)
-  }, [data])
+    console.log('Wizard form data:', formData)
+  }, [formData])
 
+  const clearFormData = useFormStore(s => s.clearFormData)
   useEffect(() => {
-    if (!isAllowed) {
-      router.replace('/wizard/step1')
-      return
-    }
+    clearFormData()
+    console.log('...clearing form data...')
+  }, [clearFormData])
 
-    clearStorage()
-  }, [isAllowed, router, clearStorage])
+  // useEffect(() => {
+  //   if (!isAllowed) {
+  //     router.replace('/wizard/step1')
+  //     return
+  //   }
 
-  if (!isAllowed) {
-    return null
-  }
+  //   clearStorage()
+  // }, [isAllowed, router, clearStorage])
+
+  // if (!isAllowed) {
+  //   return null
+  // }
 
   return (
     <>     

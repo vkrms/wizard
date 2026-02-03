@@ -1,53 +1,52 @@
 'use client'
 
+import { useForm, SubmitHandler, FormProvider } from 'react-hook-form'
 import { Form, FormHeader, TextField, WizardNavigation, WizardContent } from '@/components/ui';
-import { useForm, FormProvider } from "react-hook-form"
-import { zodResolver } from '@hookform/resolvers/zod'
-import { z } from 'zod'
 import { useRouter } from 'next/navigation'
-import { useWizard } from '@/lib/WizardContext'
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useFormStore } from '@/lib/formStore';
 
-const formSchema = z.object({
-  name: z.string().min(2, 'This field is required'),
-  email: z.email('Please enter a valid email'),
-  phone: z.string()
-    .min(1, 'This field is required')
-    .regex(/^[\d ]+$/, 'Please enter a valid phone number')
-    .refine(val => val.replace(/ /g, '').length >= 6, 'Phone number must contain at least 6 digits')
+const step1Schema = z.object({
+  name: z.string().min(2),
+  email: z.email(),
+  phone: z
+    .string()
+    .regex(/^[\d+\-\s()]+$/, 'Only numbers, +, -, spaces and parentheses')
+    .refine((val) => (val.match(/\d/g) ?? []).length >= 6, 'At least 6 digits required')
 })
 
-type Inputs = z.infer<typeof formSchema>
+export type step1SchemaType = z.infer<typeof step1Schema>
 
 export default function Step1() {
-  const { data, updateData } = useWizard()
+  const { name, email, phone } = useFormStore(s => s)
+
+  const methods = useForm<step1SchemaType>({
+    resolver: zodResolver(step1Schema),
+    defaultValues: { name, email, phone }
+  })
+
   const router = useRouter();
 
-  const methods = useForm<Inputs>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      name: data.name || '',
-      email: data.email || '',
-      phone: data.phone || '',
-    },
-  });
+  const setStep1 = useFormStore(s => s.setStep1)
+  const markStepComplete = useFormStore(s => s.markStepComplete)
 
-  const onSubmit = (formData: Inputs) => {
-    updateData(formData)
+  const onSubmit: SubmitHandler<step1SchemaType> = (data) => {    
+    setStep1(data)
+    markStepComplete()
     router.push('/wizard/step2')
   }
 
-  const handleNext = methods.handleSubmit(onSubmit)
-
   return (
     <>
-      <FormProvider {...methods}>
-        <WizardContent>
-          <FormHeader
-            title="Personal info"
-            description="Please provide your name, email address, and phone number."
-          />
+      <WizardContent>
+        <FormHeader
+          title="Personal info"
+          description="Please provide your name, email address, and phone number."
+        />
 
-          <Form onSubmit={onSubmit} className="mt-5 sm:mt-8">
+        <FormProvider {...methods}>
+          <Form onSubmit={methods.handleSubmit(onSubmit)} className="mt-5 sm:mt-8">
             <div className="flex flex-col gap-3 sm:gap-5 max-w-[446px]">
               <TextField
                 label="Name"
@@ -67,17 +66,17 @@ export default function Step1() {
                 label="Phone Number"
                 name="phone"
                 type="tel"
-                placeholder="e.g. 66 234 567 890"
+                placeholder="e.g. +66 234 567 890"
               />
             </div>
           </Form>
-        </WizardContent>
+        </FormProvider>
+      </WizardContent>
 
-        <WizardNavigation
-          showBack={false}
-          onNext={handleNext}
-        />
-      </FormProvider>
+      <WizardNavigation
+        showBack={false}
+        onNext={(methods.handleSubmit(onSubmit))}
+      />
     </>
   );
 }

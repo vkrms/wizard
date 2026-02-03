@@ -1,43 +1,64 @@
 'use client'
 
-import { useState, useEffect } from 'react';
 import { FormHeader, WizardNavigation, AddOnCard, WizardContent } from '@/components/ui';
 import { useRouter } from 'next/navigation';
-import { hasRequiredDataForStep, useWizard } from '@/lib/WizardContext';
 import { ADD_ONS, formatAddOnPrice } from '@/lib/constants';
+import { z } from 'zod';
+import { useFormStore } from '@/lib/formStore';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { useGuard } from '@/lib/useGuard';
+
+const step3Schema = z.object({
+  addOns: z.array(z.string()),
+})
+
+export type step3SchemaType = z.infer<typeof step3Schema>
 
 export default function Step3() {
-  const { data, updateData } = useWizard()
   const router = useRouter()
-  const isYearly = data.billingYearly || false
-  const isAllowed = hasRequiredDataForStep(3, data)
 
-  const [addOns, setAddOns] = useState<string[]>(data.addOns || [])
+  const { addOns: storedAddOns } = useFormStore(s => s)
+  
+  const billingYearly = useFormStore(s => s.billingYearly)
+  const setStep3 = useFormStore(s => s.setStep3)
+  const { markStepComplete, markStepIncomplete } = useFormStore(s => s)
 
-  useEffect(() => {
-    if (!isAllowed) {
-      router.replace('/wizard/step1')
+  const methods = useForm<step3SchemaType>({
+    resolver: zodResolver(step3Schema),
+    defaultValues: {
+      addOns: storedAddOns || [],
     }
-  }, [isAllowed, router])
+  })
 
-  if (!isAllowed) {
-    return null
-  }
+  const addOns = methods.watch('addOns')
 
-  const toggleAddOn = (id: string) => {
-    const updated = addOns.includes(id)
-      ? addOns.filter(a => a !== id)
-      : [...addOns, id]
-    setAddOns(updated)
-    updateData({ addOns: updated })
-  }
 
   const handleGoBack = () => {
     router.push('/wizard/step2')
+    markStepIncomplete()
   }
 
   const handleNext = () => {
+    markStepComplete()
     router.push('/wizard/step4')
+  }
+
+  const toggleAddOn = (addOnId: string) => {
+    const updatedAddOns = addOns.includes(addOnId)
+      ? addOns.filter(a => a !== addOnId) // remove
+      : [...addOns, addOnId] // add
+
+    methods.setValue('addOns', updatedAddOns)
+    setStep3({ addOns: methods.getValues('addOns') })
+
+    console.log({addOnId, addOns: methods.getValues('addOns')})
+  }
+
+  const isAllowed = useGuard(3)
+
+  if (!isAllowed) {
+    return null
   }
 
   return (
@@ -54,8 +75,7 @@ export default function Step3() {
               <AddOnCard
                 key={addOn.id}
                 addOn={addOn}
-                price={formatAddOnPrice(addOn, isYearly)}
-                isSelected={addOns.includes(addOn.id)}
+                price={formatAddOnPrice(addOn, billingYearly)}
                 checked={addOns.includes(addOn.id)}
                 onChange={() => toggleAddOn(addOn.id)}
               />

@@ -1,28 +1,37 @@
 'use client'
 
-import { useEffect } from 'react';
 import { FormHeader, WizardContent, WizardNavigation } from '@/components/ui';
 import { useRouter } from 'next/navigation';
-import { hasRequiredDataForStep, useWizard } from '@/lib/WizardContext';
 import Link from 'next/link';
-import { getPlanById, getAddOnsByIds, formatAddOnPrice, getYearlyPrice } from '@/lib/constants';
+import { getAddOnsByIds, formatAddOnPrice, getYearlyPrice, getPlanById, PlanId } from '@/lib/constants';
+import { selectPlanMonthlyPrice, useFormStore } from '@/lib/formStore';
+import { useGuard } from '@/lib/useGuard';
 
 export default function Step4() {
-  const { data } = useWizard()
   const router = useRouter();
-  const isAllowed = hasRequiredDataForStep(4, data)
 
-  const isYearly = data.billingYearly || false
-  const selectedPlan = getPlanById(data.plan || 'arcade')
-  const selectedAddOnsData = getAddOnsByIds(data.addOns || [])
+  const monthlyPrice = useFormStore(selectPlanMonthlyPrice)
+
+  const {
+    billingYearly: isYearly,
+    plan: selectedPlanId,
+    addOns: selectedAddOns,
+    markStepComplete,
+    markStepIncomplete,
+  } = useFormStore()
+
+  const selectedPlanName = getPlanById(selectedPlanId as PlanId).name
 
   const planPrice = isYearly
-    ? getYearlyPrice(selectedPlan.monthlyPrice)
-    : selectedPlan.monthlyPrice
+    ? getYearlyPrice(monthlyPrice)
+    : monthlyPrice
 
   const planPriceDisplay = isYearly
     ? `$${planPrice}/yr`
     : `$${planPrice}/mo`
+
+
+  const selectedAddOnsData = getAddOnsByIds(selectedAddOns)
 
   const addOnsTotal = selectedAddOnsData.reduce((sum, ao) => {
     return sum + (isYearly ? getYearlyPrice(ao.monthlyPrice) : ao.monthlyPrice)
@@ -35,23 +44,20 @@ export default function Step4() {
 
   const billingPeriod = isYearly ? 'year' : 'month'
 
-  useEffect(() => {
-    if (!isAllowed) {
-      router.replace('/wizard/step1')
-    }
-  }, [isAllowed, router])
-
-  if (!isAllowed) {
-    return null
-  }
-
   const handleGoBack = () => {
     router.push('/wizard/step3');
+    markStepIncomplete()
   }
 
   const handleConfirm = () => {
-    // Navigate to thank you page or handle confirmation
+    markStepComplete()
     router.push('/wizard/step5')
+  }
+
+  const isAllowed = useGuard(4)
+
+  if (!isAllowed) {
+    return null
   }
 
   return (
@@ -70,7 +76,7 @@ export default function Step4() {
               <div className="flex flex-col">
                 <div className="flex items-center gap-3">
                   <span className="text-blue-950 text-[14px] sm:text-[16px] font-medium">
-                    {selectedPlan.name} ({isYearly ? 'Yearly' : 'Monthly'})
+                    {selectedPlanName} ({isYearly ? 'Yearly' : 'Monthly'})
                   </span>
                 </div>
                 <Link
@@ -86,12 +92,12 @@ export default function Step4() {
             </div>
 
             {/* Divider */}
-            {selectedAddOnsData.length > 0 && (
+            {selectedAddOns.length > 0 && (
               <div className="border-t border-purple-200 my-[10px] sm:mt-6 sm:mb-4"></div>
             )}
 
             {/* Add-ons Summary */}
-            {selectedAddOnsData.length > 0 && (
+            {selectedAddOns.length > 0 && (
               <div className="flex flex-col gap-4">
                 {selectedAddOnsData.map((addOn) => (
                   <div key={addOn.id} className="flex items-center justify-between">
