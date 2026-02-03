@@ -20,6 +20,12 @@ export default function Step4() {
     markStepIncomplete,
   } = useFormStore()
 
+  const isAllowed = useGuard(4)
+
+  if (!isAllowed) {
+    return null
+  }
+
   const selectedPlanName = getPlanById(selectedPlanId as PlanId).name
 
   const planPrice = isYearly
@@ -52,12 +58,6 @@ export default function Step4() {
   const handleConfirm = () => {
     markStepComplete()
     router.push('/wizard/step5')
-  }
-
-  const isAllowed = useGuard(4)
-
-  if (!isAllowed) {
-    return null
   }
 
   return (
