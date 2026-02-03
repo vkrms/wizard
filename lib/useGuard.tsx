@@ -7,22 +7,16 @@ import { useEffect } from 'react'
 
 export const useGuard = (currentStep: number) => {
   const prevStep = currentStep - 1
-  const completedSteps = useFormStore(s => s.completedSteps)
+  const { completedSteps } = useFormStore()
   const router = useRouter()
 
-  const isAllowed = completedSteps >= prevStep
-
-  // console.log({
-  //   isAllowed,
-  //   completedSteps,
-  //   prevStep
-  // })
+  const isAllowed = completedSteps >= prevStep  
 
   useEffect(() => {
     if (!isAllowed) {
-      router.push(`/wizard/step${prevStep}`)
+      router.push(`/wizard/step${completedSteps + 1}`)
     }
-  }, [isAllowed, router, prevStep])
+  }, [isAllowed, router, prevStep, completedSteps])
 
   return isAllowed
 }
