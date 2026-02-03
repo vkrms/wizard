@@ -17,15 +17,10 @@ const steps: Step[] = [
   { number: 4, label: 'STEP 4', title: 'SUMMARY', path: '/wizard/step4' },
 ];
 
-interface WizardSidebarProps {
-  currentStep?: number;
-}
-
-export default function WizardSidebar({ currentStep }: WizardSidebarProps) {
+export default function WizardSidebar() {
   const pathname = usePathname();
 
   const getActiveStep = () => {
-    if (currentStep) return currentStep;
     // Special case: step 5 should show step 4 as active
     if (pathname?.includes('/wizard/step5')) {
       return 4;
