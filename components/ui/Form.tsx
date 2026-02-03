@@ -1,10 +1,10 @@
 'use client'
 
-import { type FormHTMLAttributes, type ReactNode } from 'react';
+import { FormEvent, type FormHTMLAttributes, type ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 
 export interface FormProps extends Omit<FormHTMLAttributes<HTMLFormElement>, 'onSubmit'> {
-  onSubmit: (data: any) => void | Promise<void>;
+  onSubmit: (event: FormEvent<HTMLFormElement>) => void | Promise<void>;
   children: ReactNode;
 }
 
