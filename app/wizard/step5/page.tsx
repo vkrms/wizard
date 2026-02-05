@@ -10,17 +10,11 @@ import { useGuard } from '@/lib/useGuard'
 export default function Step5() {
   const formData = useFormStore(useShallow(selectFormData))
   
+  const isAllowed = useGuard(5)
+
   useEffect(() => {
     console.log('Wizard form data:', formData)
   }, [formData])
-
-  const { clearFormData } = useFormStore()
-  useEffect(() => {
-    clearFormData()
-    console.log('...clearing form data...')
-  }, [clearFormData])
-
-  const isAllowed = useGuard(5)
 
   if (!isAllowed) {
     return null
