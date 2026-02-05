@@ -1,5 +1,6 @@
 'use client'
 
+import { useEffect } from 'react'
 import { useForm, SubmitHandler, FormProvider } from 'react-hook-form'
 import { Form, FormHeader, TextField, WizardNavigation, WizardContent } from '@/components/ui';
 import { useRouter } from 'next/navigation'
@@ -28,11 +29,16 @@ export default function Step1() {
 
   const router = useRouter();
 
-  const { setStep1, markStepComplete } = useFormStore()
+  const { setStep1, markStepComplete, clearFormData } = useFormStore()
+
+  // Clear form data when starting a new wizard flow
+  useEffect(() => {
+    clearFormData()
+  }, [clearFormData])
 
   const onSubmit: SubmitHandler<step1SchemaType> = (data) => {    
     setStep1(data)
-    markStepComplete()
+    markStepComplete(1)
     router.push('/wizard/step2')
   }
 
@@ -76,8 +82,9 @@ export default function Step1() {
       </WizardContent>
 
       <WizardNavigation
+        className="sm:justify-end sm:max-w-[446px]"
         showBack={false}
-        onNext={(methods.handleSubmit(onSubmit))}
+        onNext={methods.handleSubmit(onSubmit)}
       />
     </>
   );
