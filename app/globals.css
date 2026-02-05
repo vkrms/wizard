@@ -42,7 +42,7 @@ body {
   background-position: center;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 48em) { /* 768px */
   .sidebar {
     background-image: url(/bg-sidebar-desktop.svg);
   }

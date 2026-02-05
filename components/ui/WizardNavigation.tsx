@@ -22,7 +22,11 @@ export function WizardNavigation({
 }: WizardNavigationProps) {
   return (
     <div
-      className={cn("mt-auto flex justify-between pt-8 place-content-end self-end w-full max-w-[488px] mx-auto sm:max-w-none sm:mx-0", className)}
+      className={cn(
+        "mt-auto flex justify-between pt-8 place-content-end self-end w-full max-w-[488px] mx-auto",
+        "sm:justify-end sm:max-w-[446px] sm:ml-0 sm:mr-auto",
+        className
+      )}
       data-testid="wizard-navigation"
     >
       {showBack && onBack && (

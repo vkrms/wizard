@@ -11,7 +11,7 @@ export function FormField({ label, htmlFor, error, children }: FormFieldProps) {
   return (
     <div className="flex flex-col gap-[2px] sm:gap-2">
       <div className="flex justify-between items-baseline">
-        <label htmlFor={htmlFor} className="text-[12px] sm:text-sm font-medium text-blue-950 leading-[1.55] whitespace-nowrap mr-4">
+        <label htmlFor={htmlFor} className="text-[12px] sm:text-sm font-semibold text-blue-950 leading-[1.55] whitespace-nowrap mr-4">
           {label}
         </label>
         
