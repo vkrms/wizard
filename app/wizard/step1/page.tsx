@@ -67,6 +67,9 @@ export default function Step1() {
                 type="tel"
                 placeholder="e.g. +66 234 567 890"
               />
+
+              {/* hidden submit button to trigger form submission on enter key */}
+              <button type="submit" className="hidden"/>
             </div>
           </Form>
         </FormProvider>
