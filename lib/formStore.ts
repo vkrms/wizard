@@ -5,6 +5,7 @@ import { step1SchemaType } from '@/app/wizard/step1/page'
 import { step2SchemaType } from '@/app/wizard/step2/page'
 import { step3SchemaType } from '@/app/wizard/step3/page'
 
+type StepNumber = 0 | 1 | 2 | 3 | 4 | 5
 
 interface FormStore {
   name: string
@@ -13,14 +14,14 @@ interface FormStore {
   plan: string
   billingYearly: boolean
   addOns: string[]
-  completedSteps: number,
+  completedSteps: StepNumber
   setStep1: (data: step1SchemaType) => void
   setStep2: (data: step2SchemaType) => void
   setStep3: (data: step3SchemaType) => void
   report: () => void
   clearFormData: () => void
-  markStepComplete: () => void
-  markStepIncomplete: () => void
+  markStepComplete: (step: StepNumber) => void
+  markStepIncomplete: (step: StepNumber) => void
 }
 
 const initialFormState = {
@@ -29,8 +30,8 @@ const initialFormState = {
   phone: '',
   plan: '',
   billingYearly: false,
-  addOns: [],
-  completedSteps: 0,
+  addOns: [] as string[],
+  completedSteps: 0 as StepNumber,
 }
 
 const useFormStore = create<FormStore>((set, get) => ({
@@ -49,9 +50,13 @@ const useFormStore = create<FormStore>((set, get) => ({
 
   clearFormData: () => set(initialFormState),
 
-  markStepComplete: () => set(state => ({ completedSteps: state.completedSteps + 1 })),
+  markStepComplete: (step: StepNumber) => set(state => ({ 
+    completedSteps: Math.max(state.completedSteps, step) as StepNumber
+  })),
 
-  markStepIncomplete: () => set(state => ({ completedSteps: state.completedSteps - 1 })),
+  markStepIncomplete: (step: StepNumber) => set(state => ({ 
+    completedSteps: Math.min(state.completedSteps, step) as StepNumber
+  })),
 }))
 
 export const selectPlanMonthlyPrice = (state: FormStore) => {
@@ -71,4 +76,4 @@ export const selectFormData = (state: FormStore) => {
   }
 }
 
-export { useFormStore }
+export { useFormStore, type StepNumber }

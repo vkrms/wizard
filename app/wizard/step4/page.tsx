@@ -52,11 +52,11 @@ export default function Step4() {
 
   const handleGoBack = () => {
     router.push('/wizard/step3');
-    markStepIncomplete()
+    markStepIncomplete(3)
   }
 
   const handleConfirm = () => {
-    markStepComplete()
+    markStepComplete(4)
     router.push('/wizard/step5')
   }
 

@@ -45,14 +45,14 @@ export default function Step2() {
 
 
   const onSubmit = () => {
-    markStepComplete()
+    markStepComplete(2)
     setStep2(methods.getValues())
     router.push('/wizard/step3');
   }
 
   const handleGoBack = () => {
     router.push('/wizard/step1');
-    markStepIncomplete()
+    markStepIncomplete(1)
   }
 
   return (

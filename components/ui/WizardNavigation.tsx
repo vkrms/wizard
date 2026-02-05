@@ -24,7 +24,7 @@ export function WizardNavigation({
     <div
       className={cn(
         "mt-auto flex justify-between pt-8 place-content-end self-end w-full max-w-[488px] mx-auto",
-        "sm:justify-end sm:max-w-[446px] sm:ml-0 sm:mr-auto",
+        "sm:ml-0 sm:mr-auto sm:max-w-none",
         className
       )}
       data-testid="wizard-navigation"
